@@ -111,6 +111,7 @@ public class AssetBundleBuilder
         AssetDatabase.RemoveUnusedAssetBundleNames();
     }
 
+    [MenuItem( "Resource/打包所有" )]
     public static void Build()
     {
         BuildPipeline.BuildAssetBundles( Path, Options, TargetPlatform );
@@ -144,8 +145,8 @@ public class AssetBundleBuilder
             string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( bundles[i] );
             for( int j = 0; j < paths.Length; j++ )
             {
-                string[] array = paths[j].Split( '/' );
-                config.Assets.Add( array[array.Length - 1] );
+                //string[] array = paths[j].Split( '/' );
+                config.Assets.Add( paths[j] );
             }
             res_list.Add( config );
         }

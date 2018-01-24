@@ -1,0 +1,1 @@
+ui/ui_test_panel.assetbundle	4150	0	e36289c86ffb24f080a9ed2a69ffff74		Assets/Res/UI/Prefab/ui_test_panel.prefab,

@@ -5,3 +5,4 @@ UnityPackageManager/
 .vs/
 *.csproj
 *.sln
+Assets/StreamingAssets/
