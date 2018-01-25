@@ -10,8 +10,10 @@ using UnityEditor;
 public class AssetBundleBuilder
 {
     public static string Path = "Assets/StreamingAssets";
-
     public static string ResListPath = "Assets/res_list.txt";
+
+    public static string LuaDir = "Assets/Script/LuaScript/";
+    public static string LuaGenDir = "Assets/LuaScriptTxt/";
 
     public static BuildAssetBundleOptions Options = BuildAssetBundleOptions.None;
 
@@ -111,17 +113,63 @@ public class AssetBundleBuilder
         AssetDatabase.RemoveUnusedAssetBundleNames();
     }
 
-    [MenuItem( "Resource/打包所有" )]
+    [MenuItem( "打包/打包所有" )]
     public static void Build()
     {
+        //CreateLuaTxt();
         BuildPipeline.BuildAssetBundles( Path, Options, TargetPlatform );
         BuildResList();
+        //Directory.Delete( LuaGenDir, true );
+        //AssetDatabase.Refresh();
     }
 
-    [MenuItem( "Resource/清空缓存" )]
+    //[MenuItem( "Resource/清空缓存" )]
     public static void ClearCache()
     {
         Caching.ClearCache();
+    }
+
+    public static void CreateLuaTxt()
+    {
+        if ( Directory.Exists( LuaGenDir ) )
+            Directory.Delete( LuaGenDir, true );
+        Directory.CreateDirectory( LuaGenDir );
+
+        List<string> luas = GetFiles( new DirectoryInfo( LuaDir ) );
+        float step = luas.Count > 0 ? ( 1.0f / luas.Count ) : 1.0f;
+        float prog = 0.0f;
+
+        List<string> res = new List<string>();
+        foreach( string lua in luas )
+        {
+            prog += step;
+            EditorUtility.DisplayProgressBar( "Copy LUA", lua, prog );
+
+            string gen = lua.Replace( LuaDir, LuaGenDir ) + ".txt";
+            string path = System.IO.Path.GetDirectoryName( gen );
+            if ( !Directory.Exists( path ) )
+                Directory.CreateDirectory( path );
+            File.Copy( lua, gen, true );
+            res.Add( gen );
+        }
+
+        EditorUtility.ClearProgressBar();
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
+
+        int length = 0;
+        foreach( string lua in res )
+        {
+            if ( length == 0 )
+                length = lua.IndexOf( LuaGenDir );
+            AssetImporter import = AssetImporter.GetAtPath( lua.Substring( length ) );
+            string bundle_name = lua.Substring( length + LuaGenDir.Length );
+            bundle_name = bundle_name.Replace( ".lua.txt", "" );
+            import.assetBundleName = string.Format( "lua/{0}.assetbundle", bundle_name );
+        }
+
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
     }
     
     public static void BuildResList()
@@ -199,5 +247,26 @@ public class AssetBundleBuilder
             file_stream.Write( bytes, 0, bytes.Length );
             file_stream.Flush();
         }
+    }
+
+    static List<string> GetFiles( DirectoryInfo dir )
+    {
+        List<string> ret = new List<string>();
+        DirectoryInfo[] subs = dir.GetDirectories();
+        FileInfo[] files = dir.GetFiles();
+
+        foreach( FileInfo file in files )
+        {
+            if (file.Extension.EndsWith( "meta" ))
+                continue;
+            ret.Add( file.FullName.Replace( "\\", "/" ) );
+        }
+
+        foreach( DirectoryInfo sub in subs )
+        {
+            ret.AddRange( GetFiles( sub ) );
+        }
+
+        return ret;
     }
 }

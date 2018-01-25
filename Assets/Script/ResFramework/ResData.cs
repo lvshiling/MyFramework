@@ -29,6 +29,8 @@ namespace ResFramework
 
         private AssetBundle m_bundle = null;
 
+        private bool m_bundle_async = true;
+
         private int m_loaded_dependencies_count = 0;
 
         private Dictionary<string, RequestAssetData> m_request_assets = new Dictionary<string, RequestAssetData>();
@@ -44,23 +46,26 @@ namespace ResFramework
             m_state = ResDataState.Init;
             m_res_config = null;
             m_bundle = null;
+            m_bundle_async = true;
             m_loaded_dependencies_count = 0;
             m_request_assets.Clear();
         }
 
-        public void LoadAssetBundle( string _asset_name, Action<ResData,UnityEngine.Object> _action, bool async = true )
+        public void LoadAssetBundle( string _asset_name, Action<ResData,UnityEngine.Object> _action, bool _async = true )
         {
             switch( m_state )
             {
                 case ResDataState.Init:
-                    _loadDependencies();
-                    _addRequestAssets( _asset_name, _action, async );
+                    m_bundle_async = _async;
+                    _addRequestAssets( _asset_name, _action, _async );
+                    _loadDependencies( _async );
                     break;
                 case ResDataState.LoadingDependencies:
-                    _addRequestAssets( _asset_name, _action, async );
+                    m_bundle_async = _async;
+                    _addRequestAssets( _asset_name, _action, _async );
                     break;
                 case ResDataState.LoadingSelf:
-                    _addRequestAssets( _asset_name, _action, async );
+                    _addRequestAssets( _asset_name, _action, _async );
                     break;
                 case ResDataState.BundleLoaded:
                     if( _asset_name == String.Empty )
@@ -70,18 +75,18 @@ namespace ResFramework
                     }
                     else
                     {
-                        _addRequestAssets( _asset_name, _action, async );
+                        _addRequestAssets( _asset_name, _action, _async );
                         _loadAsset( _asset_name );
                     }
                     break;
             }
         }
 
-        private void _loadDependencies()
+        private void _loadDependencies( bool _async )
         {
             if ( m_res_config.Dependencies.Count == 0 )
             {
-                _loadSelfBundle();
+                _loadSelfBundle( _async );
             }
             else
             {
@@ -95,7 +100,7 @@ namespace ResFramework
                         return;
                     }
                     ResData data = ResManager.Instance.GetResData( config, true );
-                    data.LoadAssetBundle( string.Empty, _dependenciesLoaded );
+                    data.LoadAssetBundle( string.Empty, _dependenciesLoaded, _async );
                 }
             }
         }
@@ -105,14 +110,14 @@ namespace ResFramework
             m_loaded_dependencies_count++;
             if ( m_loaded_dependencies_count == m_res_config.Dependencies.Count )
             {
-                _loadSelfBundle();
+                _loadSelfBundle( m_bundle_async );
             }
         }
 
-        private void _loadSelfBundle()
+        private void _loadSelfBundle( bool _async )
         {
             m_state = ResDataState.LoadingSelf;
-            AssetBundleLoader.Instance.LoadAssetbundle( this );
+            AssetBundleLoader.Instance.LoadAssetbundle( this, _async );
         }
 
         public void OnAssetBundleLoaded( AssetBundle _bundle )

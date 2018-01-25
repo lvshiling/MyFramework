@@ -22,11 +22,18 @@ namespace ResFramework
             DontDestroyOnLoad( this );
 		}
 
-		public void LoadAssetbundle( ResData _assetbundle )
+		public void LoadAssetbundle( ResData _assetbundle, bool _async )
 		{
-            if( m_waiting_bundle.Contains( _assetbundle ) || m_loading_bundle.Contains( _assetbundle ) )
-                return;
-            m_waiting_bundle.Enqueue( _assetbundle );
+            if( _async )
+            {
+                if ( m_waiting_bundle.Contains( _assetbundle ) || m_loading_bundle.Contains( _assetbundle ) )
+                    return;
+                m_waiting_bundle.Enqueue( _assetbundle );
+            }
+            else
+            {
+                StartCoroutine( _loadAssetBundle( _assetbundle ) );
+            }
         }
 
         public void Update()

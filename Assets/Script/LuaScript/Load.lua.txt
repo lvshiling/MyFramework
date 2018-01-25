@@ -1,0 +1,18 @@
+
+--[["files.associations": {
+    "*.txt":"lua"
+},
+"files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/*.meta": true
+}]]
+
+
+U3D	= CS.UnityEngine;
+
+require 'LuaDebug.lua.txt';
+local breakSocketHandle,debugXpCall = StartDebug( "localhost",7003 );

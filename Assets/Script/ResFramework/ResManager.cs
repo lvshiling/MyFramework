@@ -10,17 +10,17 @@ using UnityEditor;
 
 namespace ResFramework
 {
-    public enum ResLoadMode
+    public enum eResLoadMode
     {
-        ResLoadMode_Editor,
-        ResLoadMode_Bundle,
+        Editor,
+        Bundle,
     }
 
     public class ResManager
     {
         public static ResManager Instance = new ResManager();
 
-        private ResLoadMode m_res_load_mode = ResLoadMode.ResLoadMode_Bundle;
+        public eResLoadMode ResLoadMode { get; private set; }
 
         private Dictionary<string,ResConfig> m_res_config = new Dictionary<string, ResConfig>();
 
@@ -28,10 +28,10 @@ namespace ResFramework
 
         private Dictionary<string, string> m_res_bundle_path = new Dictionary<string, string>();
 
-        public void Init( ResLoadMode _mode )
+        public void Init( eResLoadMode _mode )
         {
-            m_res_load_mode = _mode;
-            if( m_res_load_mode == ResLoadMode.ResLoadMode_Bundle )
+            ResLoadMode = _mode;
+            if( ResLoadMode == eResLoadMode.Bundle )
             {
                 LoadResList();
             }
@@ -104,7 +104,7 @@ namespace ResFramework
         public void LoadAsset( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
         {
 #if UNITY_EDITOR
-            if( m_res_load_mode == ResLoadMode.ResLoadMode_Editor )
+            if( ResLoadMode == eResLoadMode.Editor )
             {
                 UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( _asset_path );
                 if( _action != null )
@@ -114,7 +114,7 @@ namespace ResFramework
                 return;
             }
 #endif
-            if ( m_res_load_mode == ResLoadMode.ResLoadMode_Editor )
+            if ( ResLoadMode == eResLoadMode.Editor )
                 return;
             if( !m_res_bundle_path.ContainsKey( _asset_path ) )
             {

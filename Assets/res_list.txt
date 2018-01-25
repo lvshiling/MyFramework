@@ -1,1 +1,3 @@
+lua/load.assetbundle	992	0	0c3d029d5073c5907b555aa5a1be4694		Assets/Script/LuaScript/Load.lua.txt,
+lua/luadebug.assetbundle	12540	0	7de4382c9be0aeaaa9775aafcb44843e		Assets/Script/LuaScript/LuaDebug.lua.txt,
 ui/ui_test_panel.assetbundle	4150	0	e36289c86ffb24f080a9ed2a69ffff74		Assets/Res/UI/Prefab/ui_test_panel.prefab,
