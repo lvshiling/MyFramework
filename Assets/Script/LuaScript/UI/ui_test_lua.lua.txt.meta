@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: ae7142c8c5a092c40b9f80a4a239d269
-timeCreated: 1516862971
+guid: bc424ba94460ad7458af824f1d286b1a
+timeCreated: 1516951384
 licenseType: Pro
 TextScriptImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: lua/load.assetbundle
+  assetBundleName: lua/ui/ui_test_lua.assetbundle
   assetBundleVariant: 

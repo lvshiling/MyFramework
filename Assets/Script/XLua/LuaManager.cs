@@ -1,6 +1,7 @@
 ﻿using XLua;
 using ResFramework;
 using UnityEngine;
+using System;
 
 namespace GameFramework
 {
@@ -13,21 +14,22 @@ namespace GameFramework
         public void Init()
         {
             m_lua_env = new LuaEnv();
-            m_lua_env.AddLoader( ( ref string path ) => 
-            {
-#if UNITY_EDITOR
-                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
-                    return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
-#endif
-                return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
-                TextAsset asset = null;
-                ResManager.Instance.LoadAsset( string.Format( "Assets/Script/LuaScript/{0}", path ), ( _res_data, _obj ) => 
-                {
-                    asset = _obj as TextAsset;
-                }, false );
-                return asset.bytes;
-            } );
-            m_lua_env.DoString( "require 'Load.lua.txt'" );
+//            m_lua_env.AddLoader( ( ref string path ) => 
+//            {
+//#if UNITY_EDITOR
+//                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
+//                    return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
+//#endif
+//                return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
+//                TextAsset asset = null;
+//                ResManager.Instance.LoadAsset( string.Format( "Assets/Script/LuaScript/{0}", path ), ( _res_data, _obj ) => 
+//                {
+//                    asset = _obj as TextAsset;
+//                }, false );
+//                return asset.bytes;
+//            } );
+//            m_lua_env.DoString( "require 'Init.lua.txt'" );
+            RequireLua( "Init", null );
         }
 
         public void UnInit()
@@ -35,17 +37,43 @@ namespace GameFramework
             m_lua_env.Dispose();
         }
 
-  //      /// <summary>
-  //      ///     取Lua层的全局变量
-  //      /// </summary>
-  //      /// <typeparam name="T">返回的类型</typeparam>
-  //      /// <param name="name">变量名</param>
-  //      /// <returns>返回该变量的值</returns>
-  //      public static T Get<T>(string name) {
-  //          if (lua == null) {
-  //              Logger.Error("Lua.Initialize should be called before Lua.Get<T>");
-  //              return default(T);
-  //          }
+        public void RequireLua( string _name, Action<object> _call_back )
+        {
+            _name = string.Format( "Assets/Script/LuaScript/{0}.lua.txt", _name );
+#if UNITY_EDITOR
+            if ( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
+            {
+                object[] datas = m_lua_env.DoString( System.IO.File.ReadAllBytes( _name ) ); 
+                if( _call_back != null )
+                {
+                    _call_back( datas[0] );
+                }
+            }
+#endif
+            if( ResManager.Instance.ResLoadMode == eResLoadMode.Bundle )
+            {
+                ResManager.Instance.LoadAsset( _name, (_res_data, _obj) =>
+                {
+                    object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes );
+                    if ( _call_back != null )
+                    {
+                        _call_back( datas[0] );
+                    }
+                }, false );
+            }
+        }
+
+        //      /// <summary>
+        //      ///     取Lua层的全局变量
+        //      /// </summary>
+        //      /// <typeparam name="T">返回的类型</typeparam>
+        //      /// <param name="name">变量名</param>
+        //      /// <returns>返回该变量的值</returns>
+        //      public static T Get<T>(string name) {
+        //          if (lua == null) {
+        //              Logger.Error("Lua.Initialize should be called before Lua.Get<T>");
+        //              return default(T);
+        //          }
 
         //          return lua.Global.Get<T>(name);
         //      }

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: be9507f29e8d0cb47bb63864649f4cfc
+guid: 27d47de600cd0584e9466127f9f418a8
 timeCreated: 1516700334
 licenseType: Pro
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 100100000
   userData: 
-  assetBundleName: ui/ui_test_panel.assetbundle
+  assetBundleName: ui/ui_test_c.assetbundle
   assetBundleVariant: 

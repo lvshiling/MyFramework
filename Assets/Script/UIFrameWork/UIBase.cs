@@ -128,7 +128,7 @@ namespace UIFrameWork
         void Awake()
         {
             if( UIManager.Instance == null )
-                OnLoaded();
+                OnLoaded( null );
         }
 
         void Start()
@@ -149,7 +149,7 @@ namespace UIFrameWork
             event_trigger.triggers.Add( entry );
         }
 
-        public void Initialize()
+        public void Initialize( object _obj )
         {
             m_canvas = GetComponent<Canvas>();
             if ( m_canvas == null )
@@ -166,13 +166,13 @@ namespace UIFrameWork
                 m_entrance_anim_time = m_animator.runtimeAnimatorController.animationClips[0].length;
                 m_exit_anim_time = m_animator.runtimeAnimatorController.animationClips[1].length;
             }
-            OnLoaded();
+            OnLoaded( _obj );
         }
 
         /// <summary>
         /// 整个界面被加载完成时的回调 相当于Awake 为了方便管理不想在子类中用Awake
         /// </summary>
-        public virtual void OnLoaded()
+        public virtual void OnLoaded( object _obj )
         {
 
         }

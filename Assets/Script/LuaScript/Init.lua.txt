@@ -1,0 +1,7 @@
+
+--[["files.associations": {
+    "*.txt":"lua"
+},]]
+
+
+CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );

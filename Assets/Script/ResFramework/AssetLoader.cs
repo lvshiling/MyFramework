@@ -46,7 +46,6 @@ namespace ResFramework
             Debug.LogFormat( "开始同步加载asset: {0}", _asset_name );
             UnityEngine.Object asset = bundle.LoadAsset( _asset_name );
             _resouce.OnAssetLoaded( _asset_name, asset );
-            Debug.LogFormat( "asset: {0}同步加载完成", _asset_name );
         }
 
         public void Update()

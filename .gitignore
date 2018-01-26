@@ -6,3 +6,4 @@ UnityPackageManager/
 *.csproj
 *.sln
 Assets/StreamingAssets/
+Assets/XLua/

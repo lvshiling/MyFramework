@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using ResFramework;
 using Scene = UnityEngine.SceneManagement.Scene;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
+using GameFramework;
 
 namespace UIFrameWork
 {
@@ -170,10 +171,21 @@ namespace UIFrameWork
                 // 放置ui到对应的层
                 ui_base = ui_object.GetComponent<UIBase>();
                 ui_object.transform.SetParent( m_layers[( Int32 )ui_base.Layer], false );
-
-                ui_base.Initialize();
                 m_loaded_ui.Add( ui_base );
-                _action( ui_base );
+
+                if ( ui_base.GetType() == typeof( UIBaseToLua ) )
+                {
+                    LuaManager.Instance.RequireLua( string.Format( "UI/{0}", _name ), ( _obj )=> 
+                    {
+                        ui_base.Initialize( _obj );
+                        _action( ui_base );
+                    } );
+                }
+                else
+                {
+                    ui_base.Initialize( null );
+                    _action( ui_base );
+                }
             }, false );
         }
 
@@ -346,8 +358,8 @@ namespace UIFrameWork
 
         private void _onSceneUnload( Scene _scene )
         {
-            //if ( _scene.buildIndex < 0 )
-            //    return;
+            if ( _scene.buildIndex < 0 )
+                return;
             UIBase ui = null;
             for ( int i = 0; i < m_loaded_ui.Count; )
             {

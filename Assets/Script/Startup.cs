@@ -16,7 +16,7 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             LuaManager.Instance.Init();
             UIFrameWork.UIManager.Instance.Initialize();
-            UIFrameWork.UIManager.Instance.ShowUI( "ui_test_panel" );
+            UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
         }
 
         // Update is called once per frame

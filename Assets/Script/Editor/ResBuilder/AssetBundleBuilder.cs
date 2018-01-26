@@ -123,7 +123,7 @@ public class AssetBundleBuilder
         //AssetDatabase.Refresh();
     }
 
-    //[MenuItem( "Resource/清空缓存" )]
+    [MenuItem( "打包/清空缓存" )]
     public static void ClearCache()
     {
         Caching.ClearCache();
