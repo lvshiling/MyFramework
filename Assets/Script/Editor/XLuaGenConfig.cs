@@ -20,12 +20,20 @@ public static class XLuaGenConfig
     public static List<Type> LuaCallCSharp = new List<Type>()
     {           
                 //System
-                typeof(System.Object),
+                typeof(System.Reflection.Missing),
+                typeof(System.Type),
+                typeof(System.Delegate),
 
                 //Unity 
+                typeof(UnityEngine.Component),
                 typeof(UnityEngine.GameObject),
                 typeof(UnityEngine.Transform),
+                typeof(UnityEngine.RectTransform),
+                typeof(UnityEngine.RectTransform.Axis),
+                typeof(UnityEngine.RectTransform.Edge),
                 typeof(UnityEngine.UI.Button),
+                typeof(UnityEngine.UI.Button.ButtonClickedEvent),
+                typeof(UnityEngine.Events.UnityEvent),
                 typeof(UnityEngine.UI.Image),
                 typeof(UnityEngine.UI.RawImage),
                 typeof(UnityEngine.UI.ScrollRect),
@@ -35,17 +43,34 @@ public static class XLuaGenConfig
                 typeof(UnityEngine.UI.Scrollbar),
                 typeof(UnityEngine.UI.InputField),
                 typeof(UnityEngine.UI.Dropdown),
+
                 
                 //Custom
-                typeof(LuaManager)
+                typeof(System.Action),
+                typeof(System.Action<bool>),
+                typeof(System.Action<int>),
+                typeof(System.Action<float>),
+                typeof(System.Action<string>),
+                typeof(System.Action<Vector2>),
+                typeof(System.Action<Vector3>),
+                typeof(System.Action<Vector4>),
+                typeof(System.Action<GameObject>),
+                typeof(System.Action<Transform>),
+                typeof(System.Action<RectTransform>),
+
+                typeof(LuaManager),
             };
 
     //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
     [CSharpCallLua]
     public static List<Type> CSharpCallLua = new List<Type>()
     {
-                typeof(Action),
-                typeof(Action<object>),
+                typeof(System.Action),
+                typeof(System.Action<GameObject>),
+                typeof(System.Action<Transform>),
+                typeof(System.Action<RectTransform>),
+                typeof(UnityEngine.Events.UnityAction),
+
                 //typeof(Func<double, double, double>),
                 //typeof(Action<string>),
                 //typeof(Action<double>),
