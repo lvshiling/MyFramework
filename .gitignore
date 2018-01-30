@@ -7,3 +7,5 @@ UnityPackageManager/
 *.sln
 Assets/StreamingAssets/
 Assets/XLua/
+ResServer/
+

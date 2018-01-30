@@ -1,8 +1,8 @@
 local t = {};
 
 function t.OnLoad( _obj_root )
-    t.image_bg = _obj_root:GetComponent( "Image" );
-    t.image_bg.sprite = nil;
+    --t.image_bg = _obj_root:GetComponent( "Image" );
+    --t.image_bg.sprite = nil;
 end
 
 function t.PreShow( ... )

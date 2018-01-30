@@ -127,6 +127,7 @@ public class AssetBundleBuilder
     public static void ClearCache()
     {
         Caching.ClearCache();
+        File.Delete( Application.persistentDataPath + "/res_list" );
     }
 
     public static void CreateLuaTxt()

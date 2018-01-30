@@ -156,6 +156,7 @@ GameObject:
   - component: {fileID: 350959661}
   - component: {fileID: 350959660}
   - component: {fileID: 350959659}
+  - component: {fileID: 350959662}
   m_Layer: 0
   m_Name: ResProxy
   m_TagString: Untagged
@@ -198,6 +199,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &350959662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 350959658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928a7223ea55bc148ab43b879d548c2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_res_server_url: http://192.168.1.78/res
 --- !u!1 &423108541
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,6 +450,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_res_load_mode: 1
+  m_check_update: 1
 --- !u!1 &1631463089
 GameObject:
   m_ObjectHideFlags: 0

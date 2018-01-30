@@ -32,7 +32,7 @@ namespace ResFramework
             }
             else
             {
-                if ( Caching.IsVersionCached( _assetbundle.GetBundlePath(), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) ) )
+                if ( Caching.IsVersionCached( _assetbundle.GetBundleName(), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) ) )
                 {
                     Debug.LogFormat( "开始同步加载bundle: {0}", _assetbundle.GetBundleName() );
                     string name = string.Format( "{0}/{1}/{2}/__data", Caching.defaultCache.path, System.IO.Path.GetFileNameWithoutExtension( _assetbundle.GetBundleName() ), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) );
@@ -69,11 +69,11 @@ namespace ResFramework
 		private IEnumerator _loadAssetBundle( ResData _res_data )
 		{
             Debug.LogFormat( "开始异步加载bundle: {0} {1}", _res_data.GetBundleName(), Time.frameCount );
-		    UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundlePath(), Hash128.Parse( _res_data.GetResConfig().Md5 ), 0 );
+		    UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundleName(), Hash128.Parse( _res_data.GetResConfig().Md5 ), 0 );
 		    yield return www.SendWebRequest();
 		    if ( www.isHttpError )
 		    {
-		        Debug.LogErrorFormat( "bundle: {0}加载错误 {1}", _res_data.GetBundlePath(), www.error );
+		        Debug.LogErrorFormat( "bundle: {0}加载错误 {1}", _res_data.GetBundleName(), www.error );
 		        m_loading_bundle.Remove( _res_data );
                 yield break;
 		    }

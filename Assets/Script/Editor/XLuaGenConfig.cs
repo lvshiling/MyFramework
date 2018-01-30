@@ -66,6 +66,7 @@ public static class XLuaGenConfig
     public static List<Type> CSharpCallLua = new List<Type>()
     {
                 typeof(System.Action),
+                typeof(System.Action<System.Object>),
                 typeof(System.Action<GameObject>),
                 typeof(System.Action<Transform>),
                 typeof(System.Action<RectTransform>),

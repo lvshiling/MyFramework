@@ -28,8 +28,11 @@ namespace ResFramework
 
         private Dictionary<string, string> m_res_bundle_path = new Dictionary<string, string>();
 
+        private string m_persistent_res_list = string.Empty;
+
         public void Init( eResLoadMode _mode )
         {
+            m_persistent_res_list = string.Format( "{0}/{1}", Application.persistentDataPath, "res_list" );
             ResLoadMode = _mode;
             if( ResLoadMode == eResLoadMode.Bundle )
             {
@@ -39,26 +42,68 @@ namespace ResFramework
 
         public void LoadResList()
         {
-            AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/{1}", Application.streamingAssetsPath, "res_list.assetbundle" ) );
-            TextAsset text = ab.LoadAsset<TextAsset>( "res_list" );
+            if ( File.Exists( m_persistent_res_list ))
+            {
+                Byte[] bytes;
+                using ( FileStream file_stream = new FileStream( m_persistent_res_list, FileMode.Open, FileAccess.Read ) )
+                {
+                    bytes = new Byte[file_stream.Length];
+                    Int32 num_bytes_to_read = (Int32)file_stream.Length;
+                    Int32 num_bytes_read = 0;
+                    while ( num_bytes_to_read > 0 )
+                    {
+                        Int32 n = file_stream.Read( bytes, num_bytes_read, num_bytes_to_read );
+                        if ( n == 0 )
+                            break;
+                        num_bytes_read += n;
+                        num_bytes_to_read -= n;
+                    }
+                }
+                Deserialize( bytes, m_res_config );
+            }
+            else
+            {
+                AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/{1}", Application.streamingAssetsPath, "res_list.assetbundle" ) );
+                TextAsset text = ab.LoadAsset<TextAsset>( "res_list" );
+                Deserialize( text.bytes, m_res_config );
+                SaveResList( text.bytes );
+                ab.Unload( true );
+            }
+        }
+
+        public void SaveResList( byte[] _bytes )
+        {
+            if ( !Directory.Exists( Path.GetDirectoryName( m_persistent_res_list ) ))
+            {
+                Directory.CreateDirectory( Path.GetDirectoryName( m_persistent_res_list ) );
+            }
+            FileStream writer = new FileStream( m_persistent_res_list, FileMode.OpenOrCreate );
+            writer.Write( _bytes, 0, _bytes.Length );
+            writer.Flush();
+            writer.Close();
+        }
+
+        public void Deserialize( byte[] _bytes, Dictionary<string, ResConfig> _res_config )
+        {
+            m_res_bundle_path.Clear();
             try
             {
-                using( MemoryStream memory_stream = new MemoryStream( text.bytes ) )
+                using ( MemoryStream memory_stream = new MemoryStream( _bytes ) )
                 {
-                    using( StreamReader reader = new StreamReader( memory_stream, Encoding.UTF8 ) )
+                    using ( StreamReader reader = new StreamReader( memory_stream, Encoding.UTF8 ) )
                     {
-                        if( !Equals( Encoding.UTF8, reader.CurrentEncoding ) )
+                        if ( !Equals( Encoding.UTF8, reader.CurrentEncoding ) )
                         {
                             Debug.LogErrorFormat( "res_list文件 {0} 编码不是UTF-8!", reader.CurrentEncoding.EncodingName );
                             return;
                         }
-                        if( reader.EndOfStream )
+                        if ( reader.EndOfStream )
                             return;
                         Int32 line_count = 0;
-                        while( !reader.EndOfStream )
+                        while ( !reader.EndOfStream )
                         {
                             String line = reader.ReadLine();
-                            if( String.IsNullOrEmpty( line ) )
+                            if ( String.IsNullOrEmpty( line ) )
                                 continue;
                             line_count++;
                             String[] parts = line.Split( '\t' );
@@ -68,18 +113,18 @@ namespace ResFramework
                             config.Version = uint.Parse( parts[2] );
                             config.Md5 = parts[3];
                             string[] depen = parts[4].Split( ',' );
-                            for( int i = 0; i < depen.Length; i++ )
+                            for (int i = 0; i < depen.Length; i++)
                             {
-                                if( depen[i] != string.Empty )
+                                if (depen[i] != string.Empty)
                                     config.Dependencies.Add( depen[i] );
                             }
                             string[] asset = parts[5].Split( ',' );
-                            for( int i = 0; i < asset.Length; i++ )
+                            for ( int i = 0; i < asset.Length; i++ )
                             {
-                                if( asset[i] != string.Empty )
+                                if ( asset[i] != string.Empty )
                                 {
                                     config.Assets.Add( asset[i] );
-                                    if( m_res_bundle_path.ContainsKey( asset[i] ) )
+                                    if ( m_res_bundle_path.ContainsKey( asset[i] ) )
                                     {
                                         Debug.LogErrorFormat( "Asset:{0} 被打入到了多个Bundle {1}", asset[i], config.BundleName );
                                     }
@@ -89,16 +134,15 @@ namespace ResFramework
                                     }
                                 }
                             }
-                            m_res_config.Add( config.BundleName, config );
+                            _res_config.Add( config.BundleName, config );
                         }
                     }
                 }
             }
-            catch( Exception e )
+            catch ( Exception e )
             {
                 Debug.LogErrorFormat( "解析 res_list 文件失败!\tMessage: {0}\nStackTrace: {1} {2}", e.Message, e.StackTrace, e.ToString() );
             }
-            ab.Unload( true );
         }
 
         public void LoadAsset( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
@@ -145,6 +189,12 @@ namespace ResFramework
         public Dictionary<string, ResConfig> GetAllConfig()
         {
             return m_res_config;
+        }
+
+        public void SetAllConfig( Dictionary<string, ResConfig> _config )
+        {
+            m_res_config.Clear();
+            m_res_config = _config;
         }
 
         public ResConfig GetResConfig( string _bundle_name )
