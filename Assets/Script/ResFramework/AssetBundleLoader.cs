@@ -31,7 +31,7 @@ namespace ResFramework
                 m_waiting_bundle.Enqueue( _assetbundle );
             }
             else
-            {
+            {   
                 if ( Caching.IsVersionCached( _assetbundle.GetBundleName(), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) ) )
                 {
                     Debug.LogFormat( "开始同步加载bundle: {0}", _assetbundle.GetBundleName() );
@@ -68,18 +68,21 @@ namespace ResFramework
 
 		private IEnumerator _loadAssetBundle( ResData _res_data )
 		{
-            Debug.LogFormat( "开始异步加载bundle: {0} {1}", _res_data.GetBundleName(), Time.frameCount );
-		    UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundleName(), Hash128.Parse( _res_data.GetResConfig().Md5 ), 0 );
-		    yield return www.SendWebRequest();
-		    if ( www.isHttpError )
-		    {
-		        Debug.LogErrorFormat( "bundle: {0}加载错误 {1}", _res_data.GetBundleName(), www.error );
-		        m_loading_bundle.Remove( _res_data );
-                yield break;
-		    }
-		    Debug.LogFormat( "bundle: {0}加载完成 {1}", _res_data.GetBundleName(), Time.frameCount );
-            _res_data.OnAssetBundleLoaded( DownloadHandlerAssetBundle.GetContent( www ) );
-		    m_loading_bundle.Remove( _res_data );
+            Debug.LogFormat( "开始异步加载bundle: {0}", _res_data.GetBundleName() );
+            //传入_res_data.GetBundlePath()是因为如果没有缓存 会去streamingAssetsPath首包里面加载
+            using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundlePath(), Hash128.Parse( _res_data.GetResConfig().Md5 ), 0 ) )
+            {
+                yield return www.SendWebRequest();
+                if ( www.error != null )
+                {
+                    Debug.LogErrorFormat( "bundle: {0}加载错误 {1}", _res_data.GetBundleName(), www.error );
+                    m_loading_bundle.Remove( _res_data );
+                    yield break;
+                }
+                Debug.LogFormat( "bundle: {0}加载完成", _res_data.GetBundleName() );
+                _res_data.OnAssetBundleLoaded( DownloadHandlerAssetBundle.GetContent( www ) );
+                m_loading_bundle.Remove( _res_data );
+            }
         }
 	}
 }

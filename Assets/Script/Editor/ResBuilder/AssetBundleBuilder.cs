@@ -117,6 +117,7 @@ public class AssetBundleBuilder
     public static void Build()
     {
         //CreateLuaTxt();
+        //注意 unity缓存机制是以去掉路径和后缀后的包名来做缓存 所以可能存在不同的包缓存在同一文件夹下 所以一定要保证去掉路径和后缀后不能有包名相同
         BuildPipeline.BuildAssetBundles( Path, Options, TargetPlatform );
         BuildResList();
         //Directory.Delete( LuaGenDir, true );
@@ -191,7 +192,7 @@ public class AssetBundleBuilder
             {
                 Debug.LogErrorFormat( "AB包 {0}的大小居然为0 请检查！", bundles[i] );
             }
-            string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( bundles[i] );
+            string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( config.BundleName );
             for( int j = 0; j < paths.Length; j++ )
             {
                 //string[] array = paths[j].Split( '/' );
@@ -207,8 +208,12 @@ public class AssetBundleBuilder
                                         Options, TargetPlatform );
         if( File.Exists( string.Format( "{0}/StreamingAssets", Application.streamingAssetsPath ) ) )
             File.Delete( string.Format( "{0}/StreamingAssets", Application.streamingAssetsPath ) );
-        if( File.Exists( string.Format( "{0}/StreamingAssets.manifest", Application.streamingAssetsPath ) ) )
-            File.Delete( string.Format( "{0}/StreamingAssets.manifest", Application.streamingAssetsPath ) );
+        var alls = GetFiles( new DirectoryInfo( Path ) );
+        foreach ( var file in alls )
+        {
+            if ( file.EndsWith( ".manifest" ) )
+                File.Delete( file );
+        }
         AssetDatabase.Refresh(); 
     }
 
@@ -258,7 +263,7 @@ public class AssetBundleBuilder
 
         foreach( FileInfo file in files )
         {
-            if (file.Extension.EndsWith( "meta" ))
+            if ( file.Extension.EndsWith( "meta" ) )
                 continue;
             ret.Add( file.FullName.Replace( "\\", "/" ) );
         }

@@ -5,5 +5,5 @@ licenseType: Pro
 TextScriptImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: lua/ui/ui_test_lua.assetbundle
+  assetBundleName: lua/ui/ui_test_lua.lua.assetbundle
   assetBundleVariant: 

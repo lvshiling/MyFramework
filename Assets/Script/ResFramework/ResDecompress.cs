@@ -32,10 +32,10 @@ namespace ResFramework
             var configs = ResManager.Instance.GetAllConfig();
             foreach( var res in configs )
             {
-                if( Caching.IsVersionCached( string.Format( "{0}/{1}", Application.streamingAssetsPath, res.Value.BundleName ), Hash128.Parse( res.Value.Md5 ) ) )
+                if( Caching.IsVersionCached( res.Value.BundleName, Hash128.Parse( res.Value.Md5 ) ) )
                     continue;
                 m_compress_res.Add( res.Value.BundleName );
-                Caching.ClearAllCachedVersions( res.Value.BundleName );
+                Caching.ClearAllCachedVersions( System.IO.Path.GetFileNameWithoutExtension( res.Value.BundleName ) );
             }
             if( m_compress_res.Count > 0 )
             {

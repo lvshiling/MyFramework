@@ -65,26 +65,28 @@ namespace ResFramework
         private IEnumerator _downloadRes()
         {
             string url;
-            UnityWebRequest www;
             for ( int i = 0; i < m_need_download_res.Count; )
             {
                 url = string.Format( "{0}/{1}", m_res_server_url, m_need_download_res[i].BundleName );
-                if( Caching.IsVersionCached( url, Hash128.Parse( m_need_download_res[i].Md5 ) ) )
+                if( Caching.IsVersionCached( m_need_download_res[i].BundleName, Hash128.Parse( m_need_download_res[i].Md5 ) ) )
                 {
                     m_need_download_res.RemoveAt( i );
                     continue;
                 }
-                Debug.LogFormat( "开始下载资源{0}", url );
-                www = UnityWebRequest.GetAssetBundle( url, Hash128.Parse( m_need_download_res[i].Md5 ), 0 );
-                yield return www.SendWebRequest();
-                if ( www.error != null )
+                Debug.LogFormat( "开始下载资源:{0}", url );
+                using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( url, Hash128.Parse( m_need_download_res[i].Md5 ), 0 ) )
                 {
-                    Debug.LogErrorFormat( "资源:{0}下载失败 {1}", url, www.error );
-                    ++i;
-                    continue;
+                    yield return www.SendWebRequest();
+                    if ( www.isHttpError || www.isNetworkError )
+                    {
+                        Debug.LogErrorFormat( "资源:{0}下载失败 {1}", url, www.error );
+                        ++i;
+                        continue;
+                    }
+                    Debug.LogFormat( "资源:{0}下载完成", url );
+                    Caching.ClearOtherCachedVersions( System.IO.Path.GetFileNameWithoutExtension( m_need_download_res[i].BundleName ), Hash128.Parse( m_need_download_res[i].Md5 ) );
+                    m_need_download_res.RemoveAt( i );
                 }
-                Caching.ClearOtherCachedVersions( System.IO.Path.GetFileNameWithoutExtension( m_need_download_res[i].BundleName ), Hash128.Parse( m_need_download_res[i].Md5 ) );
-                m_need_download_res.RemoveAt( i );
             }
             if ( m_need_download_res.Count == 0 && m_complete != null )
             {

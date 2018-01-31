@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using ResFramework;
 using System;
-
+using UnityEngine.Networking;
 
 namespace GameFramework
 {
@@ -15,7 +15,11 @@ namespace GameFramework
         [SerializeField]
         private bool m_check_update = false;
 
-        // Use this for initialization
+        void Awake()
+        {
+            DontDestroyOnLoad( this );
+        }
+
         void Start()
         {
             ResManager.Instance.Init( m_res_load_mode );
@@ -35,7 +39,6 @@ namespace GameFramework
             }
         }
 
-        // Update is called once per frame
         void Update()
         {
 

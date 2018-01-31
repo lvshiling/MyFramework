@@ -64,6 +64,8 @@ namespace ResFramework
             else
             {
                 AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/{1}", Application.streamingAssetsPath, "res_list.assetbundle" ) );
+                if ( ab == null )
+                    return;
                 TextAsset text = ab.LoadAsset<TextAsset>( "res_list" );
                 Deserialize( text.bytes, m_res_config );
                 SaveResList( text.bytes );
@@ -201,7 +203,6 @@ namespace ResFramework
         {
             if( !m_res_config.ContainsKey( _bundle_name ) )
             {
-                Debug.LogErrorFormat( "ResConfig中没有{0}", _bundle_name );
                 return null;
             }
             return m_res_config[_bundle_name];
