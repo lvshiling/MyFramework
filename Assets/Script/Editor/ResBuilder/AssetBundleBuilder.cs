@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,7 +6,7 @@ using ResFramework;
 using UnityEngine;
 using UnityEditor;
 
-public class AssetBundleBuilder
+public class AssetBundleBuilder1
 {
     public static string Path = "Assets/StreamingAssets";
     public static string ResListPath = "Assets/res_list.txt";
@@ -116,12 +115,65 @@ public class AssetBundleBuilder
     [MenuItem( "打包/打包所有" )]
     public static void Build()
     {
-        //CreateLuaTxt();
         //注意 unity缓存机制是以去掉路径和后缀后的包名来做缓存 所以可能存在不同的包缓存在同一文件夹下 所以一定要保证去掉路径和后缀后不能有包名相同
         BuildPipeline.BuildAssetBundles( Path, Options, TargetPlatform );
-        BuildResList();
-        //Directory.Delete( LuaGenDir, true );
-        //AssetDatabase.Refresh();
+        BuildResList( null );
+        Debug.Log( "打包所有完成" );
+    }
+
+    //打包单个只是为了方便修改某个资源后不用打全包就能马上在手机上测试
+    [MenuItem( "打包/打包选中" )]
+    public static void BuildSelected()
+    {
+        UnityEngine.Object[] objs = Selection.GetFiltered<UnityEngine.Object>( SelectionMode.Assets );
+        if( objs == null || objs.Length == 0 )
+        {
+            EditorUtility.DisplayDialog( "提示", "请选中要打包的资源", "确定" );
+            return;
+        }
+        if ( File.Exists( string.Format( "{0}/{1}", Application.dataPath, ResListPath ) ) )
+        {
+            EditorUtility.DisplayDialog( "提示", "当前没有完整的res_list请先打个全包！", "确定" );
+            return;
+        }
+        Dictionary<string, ResConfig> res_config = new Dictionary<string, ResConfig>();
+        Dictionary<string, string> res_path = new Dictionary<string, string>();
+        using ( FileStream file_stream = new FileStream( ResListPath, FileMode.Open, FileAccess.Read ) )
+        {
+            Byte[] bytes = new Byte[file_stream.Length];
+            file_stream.Read( bytes, 0, (int)file_stream.Length );
+            ResManager.Deserialize( bytes, res_config, res_path );
+        }
+        List<AssetBundleBuild> res_build = new List<AssetBundleBuild>();
+        for ( int i = 0; i < objs.Length; ++i )
+        {
+            string path = AssetDatabase.GetAssetPath( objs[i] );
+            AssetImporter import = AssetImporter.GetAtPath( path );
+            if ( import == null )
+            {
+                Debug.LogErrorFormat( "{0} 不是AssetImporter不能打包！", path );
+                continue;
+            }
+            if ( res_path.ContainsKey( path ) )
+            {
+                import.assetBundleName = res_path[path];
+            }
+            else
+            {
+                import.assetBundleName = string.Format( "temp/{0}.assetbundle", System.IO.Path.GetFileNameWithoutExtension( path ) );
+            }
+            res_build.Add( new AssetBundleBuild() { assetBundleName = import.assetBundleName, assetNames = new[] { path } } );
+        }
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
+        if ( res_build.Count == 0 )
+        {
+            Debug.LogErrorFormat( "没有满足打包条件的资源 打包失败！" );
+            return;
+        }
+        BuildPipeline.BuildAssetBundles( Path, res_build.ToArray(), Options, TargetPlatform );
+        BuildResList( res_config );
+        Debug.Log( "打包选中完成" );
     }
 
     [MenuItem( "打包/清空缓存" )]
@@ -130,78 +182,44 @@ public class AssetBundleBuilder
         Caching.ClearCache();
         File.Delete( Application.persistentDataPath + "/res_list" );
     }
-
-    public static void CreateLuaTxt()
-    {
-        if ( Directory.Exists( LuaGenDir ) )
-            Directory.Delete( LuaGenDir, true );
-        Directory.CreateDirectory( LuaGenDir );
-
-        List<string> luas = GetFiles( new DirectoryInfo( LuaDir ) );
-        float step = luas.Count > 0 ? ( 1.0f / luas.Count ) : 1.0f;
-        float prog = 0.0f;
-
-        List<string> res = new List<string>();
-        foreach( string lua in luas )
-        {
-            prog += step;
-            EditorUtility.DisplayProgressBar( "Copy LUA", lua, prog );
-
-            string gen = lua.Replace( LuaDir, LuaGenDir ) + ".txt";
-            string path = System.IO.Path.GetDirectoryName( gen );
-            if ( !Directory.Exists( path ) )
-                Directory.CreateDirectory( path );
-            File.Copy( lua, gen, true );
-            res.Add( gen );
-        }
-
-        EditorUtility.ClearProgressBar();
-        AssetDatabase.Refresh();
-        AssetDatabase.SaveAssets();
-
-        int length = 0;
-        foreach( string lua in res )
-        {
-            if ( length == 0 )
-                length = lua.IndexOf( LuaGenDir );
-            AssetImporter import = AssetImporter.GetAtPath( lua.Substring( length ) );
-            string bundle_name = lua.Substring( length + LuaGenDir.Length );
-            bundle_name = bundle_name.Replace( ".lua.txt", "" );
-            import.assetBundleName = string.Format( "lua/{0}.assetbundle", bundle_name );
-        }
-
-        AssetDatabase.Refresh();
-        AssetDatabase.SaveAssets();
-    }
     
-    public static void BuildResList()
+    public static void BuildResList( Dictionary<string, ResConfig> _res_list )
     {
         AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/StreamingAssets", Application.streamingAssetsPath ) );
         AssetBundleManifest manifest = ab.LoadAsset<AssetBundleManifest>( "AssetBundleManifest" );
         string[] bundles = manifest.GetAllAssetBundles();
-        List<ResConfig> res_list = new List<ResConfig>();
+        if( _res_list == null )
+            _res_list = new Dictionary<string, ResConfig>();
         for( int i = 0; i < bundles.Length; i++ )
         {
-            ResConfig config = new ResConfig();
-            config.BundleName = bundles[i];
-            config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
-            string[] depen = manifest.GetAllDependencies( bundles[i] );
-            config.Dependencies.AddRange( depen );
-            config.Size = GetAssetBundleSize( string.Format( "{0}/{1}", Application.streamingAssetsPath, bundles[i] ) );
-            if( config.Size == 0 )
+            ResConfig config;
+            if ( _res_list.ContainsKey( bundles[i] ) )
             {
-                Debug.LogErrorFormat( "AB包 {0}的大小居然为0 请检查！", bundles[i] );
+                config = _res_list[bundles[i]];
+                config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
             }
-            string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( config.BundleName );
-            for( int j = 0; j < paths.Length; j++ )
+            else
             {
-                //string[] array = paths[j].Split( '/' );
-                config.Assets.Add( paths[j] );
+                config = new ResConfig();
+                config.BundleName = bundles[i];
+                config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
+                string[] depen = manifest.GetAllDependencies( bundles[i] );
+                config.Dependencies.AddRange( depen );
+                config.Size = GetAssetBundleSize( string.Format( "{0}/{1}", Application.streamingAssetsPath, bundles[i] ) );
+                if ( config.Size == 0 )
+                {
+                    Debug.LogErrorFormat( "AB包 {0}的大小居然为0 请检查！", bundles[i] );
+                }
+                string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( config.BundleName );
+                for ( int j = 0; j < paths.Length; j++ )
+                {
+                    config.Assets.Add( paths[j] );
+                }
+                _res_list.Add( config.BundleName, config );
             }
-            res_list.Add( config );
         }
         ab.Unload( true );
-        SaveResList( ResListPath, res_list );
+        SaveResList( ResListPath, _res_list );
         AssetDatabase.Refresh();
         BuildPipeline.BuildAssetBundles( Path,
                                         new AssetBundleBuild[] { new AssetBundleBuild() { assetBundleName = "res_list.assetbundle", assetNames = new[] { ResListPath } } },
@@ -214,6 +232,7 @@ public class AssetBundleBuilder
             if ( file.EndsWith( ".manifest" ) )
                 File.Delete( file );
         }
+        File.Delete( Application.persistentDataPath + "/res_list" );
         AssetDatabase.Refresh(); 
     }
 
@@ -227,23 +246,23 @@ public class AssetBundleBuilder
         }
     }
 
-    public static void SaveResList( string _path, List<ResConfig> _res_list )
+    public static void SaveResList( string _path, Dictionary<string, ResConfig> _res_list )
     {
         using( FileStream file_stream = new FileStream( _path, FileMode.Create ) )
         {
             StringBuilder stringbuilder = new StringBuilder( 102400 );
-            foreach( ResConfig res in _res_list )
+            foreach( var res in _res_list )
             {
-                stringbuilder.AppendFormat( "{0}\t", res.BundleName );
-                stringbuilder.AppendFormat( "{0}\t", res.Size );
-                stringbuilder.AppendFormat( "{0}\t", res.Version );
-                stringbuilder.AppendFormat( "{0}\t", res.Md5 );
-                foreach( var depen in res.Dependencies )
+                stringbuilder.AppendFormat( "{0}\t", res.Value.BundleName );
+                stringbuilder.AppendFormat( "{0}\t", res.Value.Size );
+                stringbuilder.AppendFormat( "{0}\t", res.Value.Version );
+                stringbuilder.AppendFormat( "{0}\t", res.Value.Md5 );
+                foreach( var depen in res.Value.Dependencies )
                 {
                     stringbuilder.AppendFormat( "{0},", depen );
                 }
                 stringbuilder.Append( "\t" );
-                foreach( var asset in res.Assets )
+                foreach( var asset in res.Value.Assets )
                 {
                     stringbuilder.AppendFormat( "{0},", asset );
                 }
@@ -274,5 +293,49 @@ public class AssetBundleBuilder
         }
 
         return ret;
+    }
+
+    //最开始所有lua都是.lua 但是不能对.lua打包 所以打包时转换为.txt但是发现转换后打包出来的包的hash都变了 所以就干脆让所有lua都是.txt格式算了
+    public static void CreateLuaTxt()
+    {
+        if (Directory.Exists( LuaGenDir ))
+            Directory.Delete( LuaGenDir, true );
+        Directory.CreateDirectory( LuaGenDir );
+
+        List<string> luas = GetFiles( new DirectoryInfo( LuaDir ) );
+        float step = luas.Count > 0 ? ( 1.0f / luas.Count ) : 1.0f;
+        float prog = 0.0f;
+
+        List<string> res = new List<string>();
+        foreach (string lua in luas)
+        {
+            prog += step;
+            EditorUtility.DisplayProgressBar( "Copy LUA", lua, prog );
+
+            string gen = lua.Replace( LuaDir, LuaGenDir ) + ".txt";
+            string path = System.IO.Path.GetDirectoryName( gen );
+            if (!Directory.Exists( path ))
+                Directory.CreateDirectory( path );
+            File.Copy( lua, gen, true );
+            res.Add( gen );
+        }
+
+        EditorUtility.ClearProgressBar();
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
+
+        int length = 0;
+        foreach ( string lua in res )
+        {
+            if ( length == 0 )
+                length = lua.IndexOf( LuaGenDir );
+            AssetImporter import = AssetImporter.GetAtPath( lua.Substring( length ) );
+            string bundle_name = lua.Substring( length + LuaGenDir.Length );
+            bundle_name = bundle_name.Replace( ".lua.txt", "" );
+            import.assetBundleName = string.Format( "lua/{0}.assetbundle", bundle_name );
+        }
+
+        AssetDatabase.Refresh();
+        AssetDatabase.SaveAssets();
     }
 }

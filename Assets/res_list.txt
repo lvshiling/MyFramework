@@ -2,4 +2,4 @@ lua/init.lua.assetbundle	925	0	b8fc25bde6c750a4aefe9e16fa95d20d		Assets/Script/L
 lua/luadebug.lua.assetbundle	12541	0	7de4382c9be0aeaaa9775aafcb44843e		Assets/Script/LuaScript/LuaDebug.lua.txt,
 lua/ui/ui_test_lua.lua.assetbundle	943	0	1451ace7225502ec87c03f2712ac9aec		Assets/Script/LuaScript/UI/ui_test_lua.lua.txt,
 ui/ui_test_c.assetbundle	3424648	0	ce1fc123cfc7122bc4d7505aea0812f8		Assets/Res/UI/Prefab/ui_test_c.prefab,
-ui/ui_test_lua.assetbundle	3423799	0	a0bf90b7e68b4ca63fab87af93fb94f7		Assets/Res/UI/Prefab/ui_test_lua.prefab,
+ui/ui_test_lua.assetbundle	3424926	0	a2caf534d6dc3c6e9f0736ef3d0f03eb		Assets/Res/UI/Prefab/ui_test_lua.prefab,

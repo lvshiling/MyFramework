@@ -44,6 +44,7 @@ namespace ResFramework
         {
             if ( File.Exists( m_persistent_res_list ))
             {
+                Debug.Log( "开始加载persistent_res_list" );
                 Byte[] bytes;
                 using ( FileStream file_stream = new FileStream( m_persistent_res_list, FileMode.Open, FileAccess.Read ) )
                 {
@@ -59,15 +60,16 @@ namespace ResFramework
                         num_bytes_to_read -= n;
                     }
                 }
-                Deserialize( bytes, m_res_config );
+                Deserialize( bytes, m_res_config, m_res_bundle_path );
             }
             else
             {
+                Debug.Log( "开始加载streaming_res_list" );
                 AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/{1}", Application.streamingAssetsPath, "res_list.assetbundle" ) );
                 if ( ab == null )
                     return;
                 TextAsset text = ab.LoadAsset<TextAsset>( "res_list" );
-                Deserialize( text.bytes, m_res_config );
+                Deserialize( text.bytes, m_res_config, m_res_bundle_path );
                 SaveResList( text.bytes );
                 ab.Unload( true );
             }
@@ -85,9 +87,8 @@ namespace ResFramework
             writer.Close();
         }
 
-        public void Deserialize( byte[] _bytes, Dictionary<string, ResConfig> _res_config )
+        public static void Deserialize( byte[] _bytes, Dictionary<string, ResConfig> _res_config, Dictionary<string, string> _res_path )
         {
-            m_res_bundle_path.Clear();
             try
             {
                 using ( MemoryStream memory_stream = new MemoryStream( _bytes ) )
@@ -126,13 +127,15 @@ namespace ResFramework
                                 if ( asset[i] != string.Empty )
                                 {
                                     config.Assets.Add( asset[i] );
-                                    if ( m_res_bundle_path.ContainsKey( asset[i] ) )
+                                    if ( _res_path == null )
+                                        continue;
+                                    if ( _res_path.ContainsKey( asset[i] ) )
                                     {
                                         Debug.LogErrorFormat( "Asset:{0} 被打入到了多个Bundle {1}", asset[i], config.BundleName );
                                     }
                                     else
                                     {
-                                        m_res_bundle_path.Add( asset[i], config.BundleName );
+                                        _res_path.Add( asset[i], config.BundleName );
                                     }
                                 }
                             }

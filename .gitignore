@@ -8,4 +8,5 @@ UnityPackageManager/
 Assets/StreamingAssets/
 Assets/XLua/
 ResServer/
+obj/
 

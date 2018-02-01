@@ -47,7 +47,7 @@ namespace ResFramework
             }
             AssetBundle ab = DownloadHandlerAssetBundle.GetContent( www );
             m_server_res = ab.LoadAsset<TextAsset>( "res_list" );
-            ResManager.Instance.Deserialize( m_server_res.bytes, m_server_res_config );
+            ResManager.Deserialize( m_server_res.bytes, m_server_res_config, null );
             foreach( var res in m_server_res_config )
             {
                 ResConfig config = ResManager.Instance.GetResConfig( res.Key );
