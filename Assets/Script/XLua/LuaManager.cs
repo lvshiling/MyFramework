@@ -39,7 +39,7 @@ namespace GameFramework
 
         public void RequireLua( string _name, Action<object> _call_back )
         {
-            _name = string.Format( "Assets/Script/LuaScript/{0}.lua.txt", _name );
+            _name = string.Format( "Assets/LuaScript/{0}.lua.txt", _name );
 #if UNITY_EDITOR
             if ( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
             {
