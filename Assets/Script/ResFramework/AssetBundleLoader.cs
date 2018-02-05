@@ -32,12 +32,12 @@ namespace ResFramework
             }
             else
             {   
-                if ( Caching.IsVersionCached( _assetbundle.GetBundleName(), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) ) )
+                if ( Caching.IsVersionCached( new CachedAssetBundle( _assetbundle.GetBundleName(), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) ) ) )
                 {
                     Debug.LogFormat( "开始同步加载bundle: {0}", _assetbundle.GetBundleName() );
-                    string name = string.Format( "{0}/{1}/{2}/__data", Caching.defaultCache.path, System.IO.Path.GetFileNameWithoutExtension( _assetbundle.GetBundleName() ), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) );
+                    string name = string.Format( "{0}/{1}/{2}/{3}/__data", Caching.defaultCache.path, System.IO.Path.GetDirectoryName( _assetbundle.GetBundleName() ), System.IO.Path.GetFileNameWithoutExtension( _assetbundle.GetBundleName() ), Hash128.Parse( _assetbundle.GetResConfig().Md5 ) );
                     AssetBundle bundle = AssetBundle.LoadFromFile( name );
-                    if (bundle == null)
+                    if ( bundle == null )
                     {
                         Debug.LogErrorFormat( "bundle: {0}加载错误", _assetbundle.GetBundleName() );
                         return;
@@ -70,7 +70,7 @@ namespace ResFramework
 		{
             Debug.LogFormat( "开始异步加载bundle: {0}", _res_data.GetBundleName() );
             //传入_res_data.GetBundlePath()是因为如果没有缓存 会去streamingAssetsPath首包里面加载
-            using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundlePath(), Hash128.Parse( _res_data.GetResConfig().Md5 ), 0 ) )
+            using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( _res_data.GetBundlePath(), new CachedAssetBundle( _res_data.GetBundleName(), Hash128.Parse( _res_data.GetResConfig().Md5 ) ), 0 ) )
             {
                 yield return www.SendWebRequest();
                 if ( www.error != null )

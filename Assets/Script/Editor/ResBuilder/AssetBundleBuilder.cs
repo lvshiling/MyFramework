@@ -157,18 +157,17 @@ namespace ResFramework
                     Debug.LogErrorFormat( "{0} 不是AssetImporter不能打包！", path );
                     continue;
                 }
+                string name;
                 if( res_path.ContainsKey( path ) )
                 {
-                    import.assetBundleName = res_path[path];
+                    name = res_path[path];
                 }
                 else
                 {
-                    import.assetBundleName = string.Format( "temp/{0}.assetbundle", System.IO.Path.GetFileNameWithoutExtension( path ) );
+                    name = string.Format( "temp/{0}.assetbundle", System.IO.Path.GetFileNameWithoutExtension( path ) );
                 }
-                res_build.Add( new AssetBundleBuild() { assetBundleName = import.assetBundleName, assetNames = new[] { path } } );
+                res_build.Add( new AssetBundleBuild() { assetBundleName = name, assetNames = new[] { path } } );
             }
-            AssetDatabase.Refresh();
-            AssetDatabase.SaveAssets();
             if( res_build.Count == 0 )
             {
                 Debug.LogErrorFormat( "没有满足打包条件的资源 打包失败！" );
@@ -186,7 +185,7 @@ namespace ResFramework
             File.Delete( Application.persistentDataPath + "/res_list" );
         }
 
-        public static void BuildResList(Dictionary<string, ResConfig> _res_list)
+        public static void BuildResList( Dictionary<string, ResConfig> _res_list )
         {
             AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/StreamingAssets", Application.streamingAssetsPath ) );
             AssetBundleManifest manifest = ab.LoadAsset<AssetBundleManifest>( "AssetBundleManifest" );

@@ -17,8 +17,6 @@ namespace ResFramework
         public string searchPattern;
         public SearchOption searchOption = SearchOption.AllDirectories;
         public string bundleName;
-        //unity缓存机制是以去掉路径和后缀后的包名来做缓存 所以可能存在不同的包缓存在同一文件夹下 所以一定要保证去掉路径和后缀后不能有包名相同 加个前缀区分
-        public string prefix;
 
         static BuildRule()
         {
@@ -90,7 +88,6 @@ namespace ResFramework
                         var searchPattern = s.ReadLine().Split( '=' )[1];
                         var searchOption = s.ReadLine().Split( '=' )[1];
                         var bundleName = s.ReadLine().Split( '=' )[1];
-                        var prefix = s.ReadLine().Split( '=' )[1];
                         var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + name );
                         if( type != null )
                         {
@@ -99,7 +96,6 @@ namespace ResFramework
                             rule.searchPattern = searchPattern;
                             rule.searchOption = (SearchOption)Enum.Parse( typeof( SearchOption ), searchOption );
                             rule.bundleName = bundleName.ToLower();
-                            rule.prefix = prefix.ToLower();
                             rules.Add( rule );
                         }
                     }
@@ -128,42 +124,40 @@ namespace ResFramework
             foreach( var item in allDependencies )
             {
                 var assetPath = item.Key;
-                if( !assetPath.EndsWith( ".cs", StringComparison.CurrentCulture ) )
+                if( packedAssets.Contains( assetPath ) )
                 {
-                    if( packedAssets.Contains( assetPath ) )
+                    continue;
+                }
+                if( assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
+                {
+                    List<string> list = null;
+                    if( !bundles.TryGetValue( "shaders", out list ) )
                     {
-                        continue;
+                        list = new List<string>();
+                        bundles.Add( "shaders", list );
                     }
-                    if( assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
+                    if( !list.Contains( assetPath ) )
                     {
+                        list.Add( assetPath );
+                        packedAssets.Add( assetPath );
+                    }
+                }
+                else
+                {
+                    if( item.Value.Count > 1 )
+                    {
+                        //var name = "shared/" + BuildAssetBundleNameWithAssetPath( Path.GetDirectoryName( assetPath ) );
+                        var name = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( assetPath ).Replace( "assets/", string.Empty ) );
                         List<string> list = null;
-                        if( !bundles.TryGetValue( "shaders", out list ) )
+                        if( !bundles.TryGetValue( name, out list ) )
                         {
                             list = new List<string>();
-                            bundles.Add( "shaders", list );
+                            bundles.Add( name, list );
                         }
                         if( !list.Contains( assetPath ) )
                         {
                             list.Add( assetPath );
                             packedAssets.Add( assetPath );
-                        }
-                    }
-                    else
-                    {
-                        if( item.Value.Count > 1 )
-                        {
-                            var name = "shared/" + BuildAssetBundleNameWithAssetPath( Path.GetDirectoryName( assetPath ) );
-                            List<string> list = null;
-                            if( !bundles.TryGetValue( name, out list ) )
-                            {
-                                list = new List<string>();
-                                bundles.Add( name, list );
-                            }
-                            if( !list.Contains( assetPath ) )
-                            {
-                                list.Add( assetPath );
-                                packedAssets.Add( assetPath );
-                            }
                         }
                     }
                 }
@@ -208,7 +202,7 @@ namespace ResFramework
 
                 foreach( var assetPath in dependencies )
                 {
-                    if( assetPath.CompareTo( item ) == 0 )
+                    if( assetPath.EndsWith( ".cs", StringComparison.CurrentCulture ) || assetPath.Equals( item ) )
                         continue;
                     if( !allDependencies.ContainsKey( assetPath ) )
                     {
@@ -374,7 +368,7 @@ namespace ResFramework
                     break;
                 }
                 AssetBundleBuild build = new AssetBundleBuild();
-                build.assetBundleName = string.Format( "{0}{1}.assetbundle", BuildAssetBundleNameWithAssetPath( item ).Replace( "assets/", string.Empty ), prefix );
+                build.assetBundleName = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( item ).Replace( "assets/", string.Empty ) );
                 var assetNames = GetDependenciesWithoutShared( item );
                 assetNames.Add( item );
                 build.assetNames = assetNames.ToArray();

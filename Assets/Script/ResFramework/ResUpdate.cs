@@ -68,13 +68,13 @@ namespace ResFramework
             for ( int i = 0; i < m_need_download_res.Count; )
             {
                 url = string.Format( "{0}/{1}", m_res_server_url, m_need_download_res[i].BundleName );
-                if( Caching.IsVersionCached( m_need_download_res[i].BundleName, Hash128.Parse( m_need_download_res[i].Md5 ) ) )
+                if( Caching.IsVersionCached( new CachedAssetBundle( m_need_download_res[i].BundleName, Hash128.Parse( m_need_download_res[i].Md5 ) ) ) )
                 {
                     m_need_download_res.RemoveAt( i );
                     continue;
                 }
                 Debug.LogFormat( "开始下载资源:{0}", url );
-                using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( url, Hash128.Parse( m_need_download_res[i].Md5 ), 0 ) )
+                using ( UnityWebRequest www = UnityWebRequest.GetAssetBundle( url, new CachedAssetBundle( m_need_download_res[i].BundleName, Hash128.Parse( m_need_download_res[i].Md5 ) ), 0 ) )
                 {
                     yield return www.SendWebRequest();
                     if ( www.isHttpError || www.isNetworkError )
@@ -84,7 +84,7 @@ namespace ResFramework
                         continue;
                     }
                     Debug.LogFormat( "资源:{0}下载完成", url );
-                    Caching.ClearOtherCachedVersions( System.IO.Path.GetFileNameWithoutExtension( m_need_download_res[i].BundleName ), Hash128.Parse( m_need_download_res[i].Md5 ) );
+                    Caching.ClearOtherCachedVersions( m_need_download_res[i].BundleName, Hash128.Parse( m_need_download_res[i].Md5 ) );
                     m_need_download_res.RemoveAt( i );
                 }
             }

@@ -4,7 +4,6 @@ searchPath=Assets/LuaScript
 searchPattern=*.txt
 searchOption=AllDirectories
 bundleName=
-prefix=
 
 //打包UI
 [BuildAssetsWithFilename]
@@ -12,4 +11,3 @@ searchPath=Assets/Res/UI/Prefab
 searchPattern=*.prefab
 searchOption=AllDirectories
 bundleName=
-prefix=
