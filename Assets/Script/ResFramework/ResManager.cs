@@ -44,7 +44,7 @@ namespace ResFramework
         {
             if ( File.Exists( m_persistent_res_list ))
             {
-                Debug.Log( "开始加载persistent_res_list" );
+                Debug.Log( "开始从persistent_path加载res_list" );
                 Byte[] bytes;
                 using ( FileStream file_stream = new FileStream( m_persistent_res_list, FileMode.Open, FileAccess.Read ) )
                 {
@@ -64,7 +64,7 @@ namespace ResFramework
             }
             else
             {
-                Debug.Log( "开始加载streaming_res_list" );
+                Debug.Log( "开始从streaming_path加载res_list" );
                 AssetBundle ab = AssetBundle.LoadFromFile( string.Format( "{0}/{1}", Application.streamingAssetsPath, "res_list.assetbundle" ) );
                 if ( ab == null )
                     return;

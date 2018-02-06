@@ -68,7 +68,7 @@ namespace ResFramework
             return builds;
         }
 
-        static void LoadRules(string rulesini)
+        static void LoadRules( string rulesini )
         {
             using( var s = new StreamReader( rulesini ) )
             {
@@ -131,10 +131,10 @@ namespace ResFramework
                 if( assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
                 {
                     List<string> list = null;
-                    if( !bundles.TryGetValue( "shaders", out list ) )
+                    if( !bundles.TryGetValue( "shaders.assetbundle", out list ) )
                     {
                         list = new List<string>();
-                        bundles.Add( "shaders", list );
+                        bundles.Add( "shaders.assetbundle", list );
                     }
                     if( !list.Contains( assetPath ) )
                     {
@@ -171,7 +171,7 @@ namespace ResFramework
             }
         }
 
-        protected static List<string> GetDependenciesWithoutShared(string item)
+        protected static List<string> GetDependenciesWithoutShared( string item )
         {
             var assets = AssetDatabase.GetDependencies( item );
             List<string> assetNames = new List<string>();
@@ -217,11 +217,11 @@ namespace ResFramework
             }
         }
 
-        protected static List<string> GetFilesWithoutPacked(string searchPath, string searchPattern, SearchOption searchOption)
+        protected static List<string> GetFilesWithoutPacked( string searchPath, string searchPattern, SearchOption searchOption )
         {
             var files = GetFilesWithoutDirectories( searchPath, searchPattern, searchOption );
             var filesCount = files.Count;
-            var removeAll = files.RemoveAll( (string obj) =>
+            var removeAll = files.RemoveAll( ( string obj ) =>
             {
                 return packedAssets.Contains( obj );
             } );

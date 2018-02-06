@@ -90,6 +90,7 @@ namespace ResFramework
             }
             else
             {
+                Debug.LogFormat( "开始加载bundle:{0}的依赖！", m_res_config.BundleName );
                 m_state = ResDataState.LoadingDependencies;
                 for ( int i = 0; i < m_res_config.Dependencies.Count; i++ )
                 {

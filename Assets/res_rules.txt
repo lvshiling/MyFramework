@@ -11,3 +11,10 @@ searchPath=Assets/Res/UI/Prefab
 searchPattern=*.prefab
 searchOption=AllDirectories
 bundleName=
+
+//test shader
+[BuildAssetsWithFilename]
+searchPath=Assets/Res/TestShader
+searchPattern=*.prefab
+searchOption=AllDirectories
+bundleName=

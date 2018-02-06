@@ -120,11 +120,10 @@ namespace ResFramework
                 return;
             BuildPipeline.BuildAssetBundles( Path, builds.ToArray(), Options, TargetPlatform );
             BuildResList( null );
-            ClearAllAssetBundleName();
             Debug.Log( "打包所有完成" );
         }
 
-        //打包单个只是为了方便修改某个资源后不用打全包就能马上在手机上测试 但是不是依赖打包
+        //打包单个只是为了方便修改某个资源后不用打全包就能马上在手机上测试 但是没有收集依赖 
         [MenuItem( "打包/打包选中" )]
         public static void BuildSelected()
         {
@@ -164,7 +163,7 @@ namespace ResFramework
                 }
                 else
                 {
-                    name = string.Format( "temp/{0}.assetbundle", System.IO.Path.GetFileNameWithoutExtension( path ) );
+                    name = string.Format( "temp/{0}/{1}.assetbundle", System.IO.Path.GetDirectoryName( path ), System.IO.Path.GetFileNameWithoutExtension( path ) );
                 }
                 res_build.Add( new AssetBundleBuild() { assetBundleName = name, assetNames = new[] { path } } );
             }
@@ -173,6 +172,7 @@ namespace ResFramework
                 Debug.LogErrorFormat( "没有满足打包条件的资源 打包失败！" );
                 return;
             }
+            ClearAllAssetBundleName();
             BuildPipeline.BuildAssetBundles( Path, res_build.ToArray(), Options, TargetPlatform );
             BuildResList( res_config );
             Debug.Log( "打包选中完成" );

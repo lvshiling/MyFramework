@@ -28,6 +28,7 @@ namespace GameFramework
                 LuaManager.Instance.Init();
                 UIFrameWork.UIManager.Instance.Initialize();
                 UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", ( _data, _obj )=> { Instantiate( _obj ); }, false );
             };
             if( m_check_update )
             {
