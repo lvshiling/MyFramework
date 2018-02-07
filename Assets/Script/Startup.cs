@@ -4,6 +4,8 @@ using UnityEngine;
 using ResFramework;
 using System;
 using UnityEngine.Networking;
+using Utility;
+using Utility.SheetLite;
 
 namespace GameFramework
 {
@@ -27,8 +29,25 @@ namespace GameFramework
             {
                 LuaManager.Instance.Init();
                 UIFrameWork.UIManager.Instance.Initialize();
+                //测试UI
                 UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                //测试shader
                 ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", ( _data, _obj )=> { Instantiate( _obj ); }, false );
+                //测试自定义csv
+                CsvConfig.LoadCsvConfig( "global_config", ( _data )=> 
+                {
+                    for( int i= 0; i < _data.Count; ++i )
+                    {
+                        SheetRow row = _data[i];
+                        string key = row["Key"];
+                        string value = row["Value"];
+                    }
+                } );
+                //测试反射csv
+                Dictionary<string, TestCsv> dic = new Dictionary<string, TestCsv>();
+                CsvConfig.LoadCsvConfigWithClassKey<string, TestCsv>( "global_config", dic );
+                Dictionary<int, TestCsv1> dic1 = new Dictionary<int, TestCsv1>();
+                CsvConfig.LoadCsvConfigWithStructKey<int, TestCsv1>( "global_config1", dic1 );
             };
             if( m_check_update )
             {
@@ -42,7 +61,23 @@ namespace GameFramework
 
         void Update()
         {
+            
+        }
 
+        class TestCsv
+        {
+            public string Key;
+            public string Value;
+            public int VariantType;
+            public bool Description;
+        }
+
+        class TestCsv1
+        {
+            public int Key;
+            public string Value;
+            public int VariantType;
+            public bool Description;
         }
     }
 }

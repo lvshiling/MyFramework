@@ -1,3 +1,4 @@
+configs.assetbundle	978	0	eb716d04e816d104700b4cba830ae538		Assets/Res/Config/global_config.txt,Assets/Res/Config/global_config1.txt,
 luascript/init.lua.assetbundle	918	0	b8fc25bde6c750a4aefe9e16fa95d20d		Assets/LuaScript/Init.lua.txt,
 luascript/luadebug.lua.assetbundle	12540	0	7de4382c9be0aeaaa9775aafcb44843e		Assets/LuaScript/LuaDebug.lua.txt,
 luascript/ui/ui_test_lua.lua.assetbundle	936	0	1451ace7225502ec87c03f2712ac9aec		Assets/LuaScript/UI/ui_test_lua.lua.txt,

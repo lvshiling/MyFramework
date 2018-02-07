@@ -5,6 +5,13 @@ searchPattern=*.txt
 searchOption=AllDirectories
 bundleName=
 
+//打包配置
+[BuildAssetsWithAssetBundleName]
+searchPath=Assets/Res/Config
+searchPattern=*.txt
+searchOption=AllDirectories
+bundleName=configs.assetbundle
+
 //打包UI
 [BuildAssetsWithFilename]
 searchPath=Assets/Res/UI/Prefab
