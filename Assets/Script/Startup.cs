@@ -32,11 +32,11 @@ namespace GameFramework
                 //测试UI
                 UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                 //测试shader
-                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", ( _data, _obj )=> { Instantiate( _obj ); }, false );
+                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); }, false );
                 //测试自定义csv
-                CsvConfig.LoadCsvConfig( "global_config", ( _data )=> 
+                CsvConfig.LoadCsvConfig( "global_config", (_data) =>
                 {
-                    for( int i= 0; i < _data.Count; ++i )
+                    for( int i = 0; i < _data.Count; ++i )
                     {
                         SheetRow row = _data[i];
                         string key = row["Key"];
@@ -61,7 +61,7 @@ namespace GameFramework
 
         void Update()
         {
-            
+
         }
 
         class TestCsv

@@ -165,6 +165,7 @@ namespace UIFrameWork
                     return;
                 }
                 GameObject ui_object = Instantiate( prefab ) as GameObject;
+                res_data.Unload();
                 ui_object.SetActive( false );
                 ui_object.name = _name;
 

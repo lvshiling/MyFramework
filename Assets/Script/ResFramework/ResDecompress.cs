@@ -56,14 +56,11 @@ namespace ResFramework
         private void _onBundleLoaded( ResData _data, UnityEngine.Object _object )
         {
             Debug.LogFormat( "bundle: {0}解压完成", _data.GetBundleName() );
+            _data.Unload();
             m_compress_count--;
             if( m_compress_count == 0 )
             {
                 UIManager.Instance.HideUI( "ui_loading_panel" );
-                for( int i = 0; i < m_compress_res.Count; i++ )
-                {
-                    ResManager.Instance.UnloadAssetBundle( m_compress_res[i], true );
-                }
                 m_compress_res.Clear();
                 m_complete_action();
             }

@@ -12,6 +12,7 @@ namespace ResFramework
         LoadingDependencies,
         LoadingSelf,
         BundleLoaded,
+        ReadyUnload,
     }
 
     public class ResData
@@ -33,6 +34,10 @@ namespace ResFramework
 
         private int m_loaded_dependencies_count = 0;
 
+        private bool m_unloading = false;
+
+        private int m_reference_count = 0;
+
         private Dictionary<string, RequestAssetData> m_request_assets = new Dictionary<string, RequestAssetData>();
 
         public ResData( ResConfig _config )
@@ -44,11 +49,18 @@ namespace ResFramework
         public void UnInit()
         {
             m_state = ResDataState.Init;
-            m_res_config = null;
+            if( m_bundle != null )
+            {
+                m_bundle.Unload( false );
+            }
             m_bundle = null;
             m_bundle_async = true;
             m_loaded_dependencies_count = 0;
+            m_unloading = false;
+            m_reference_count = 0;
             m_request_assets.Clear();
+            ResManager.Instance.RemoveResData( m_res_config.BundleName );
+            m_res_config = null;
         }
 
         public void LoadAssetBundle( string _asset_name, Action<ResData,UnityEngine.Object> _action, bool _async = true )
@@ -68,8 +80,10 @@ namespace ResFramework
                     _addRequestAssets( _asset_name, _action, _async );
                     break;
                 case ResDataState.BundleLoaded:
+                case ResDataState.ReadyUnload:
                     if( _asset_name == String.Empty )
                     {
+                        m_reference_count++;
                         if( _action != null )
                             _action( this, null );
                     }
@@ -94,14 +108,7 @@ namespace ResFramework
                 m_state = ResDataState.LoadingDependencies;
                 for ( int i = 0; i < m_res_config.Dependencies.Count; i++ )
                 {
-                    ResConfig config = ResManager.Instance.GetResConfig( m_res_config.Dependencies[i] );
-                    if ( config == null )
-                    {
-                        Debug.LogErrorFormat( "{0}包中没有依赖包{1}的配置 加载失败", m_res_config.BundleName, m_res_config.Dependencies[i] );
-                        return;
-                    }
-                    ResData data = ResManager.Instance.GetResData( config, true );
-                    data.LoadAssetBundle( string.Empty, _dependenciesLoaded, _async );
+                    ResManager.Instance.LoadAssetBundleAndAsset( m_res_config.Dependencies[i], string.Empty, _dependenciesLoaded, _async );
                 }
             }
         }
@@ -125,6 +132,7 @@ namespace ResFramework
         {
             if( _bundle == null )
             {
+                m_reference_count = 0;
                 return;
             }
             m_state = ResDataState.BundleLoaded;
@@ -175,6 +183,7 @@ namespace ResFramework
         {
             if( _action == null )
                 return;
+            m_reference_count++;
             if( m_request_assets.ContainsKey( _asset_name ) )
             {
                 m_request_assets[_asset_name].CompleteActions.Add( _action );
@@ -187,13 +196,38 @@ namespace ResFramework
             m_request_assets.Add( _asset_name, data );
         }
 
-        public void Unload( bool _asset )
+        public void Unload()
         {
-            if( m_bundle != null )
+            m_reference_count--;
+            if( m_reference_count <= 0 && m_state != ResDataState.ReadyUnload )
             {
-                m_bundle.Unload( _asset );
+                AssetBundleLoader.Instance.StartCoroutine( _readyUnload() );
             }
-            m_bundle = null;
+        }
+
+        private IEnumerator _readyUnload()
+        {
+            m_state = ResDataState.ReadyUnload;
+            yield return new WaitForEndOfFrame();
+            Debug.LogFormat( "bundle:{0}开始卸载", m_res_config.BundleName );
+            for( int i = 0; i < m_res_config.Dependencies.Count; i++ )
+            {
+                ResData data = ResManager.Instance.GetResData( m_res_config.Dependencies[i] );
+                if( data == null )
+                    continue;
+                data.Unload();
+            }
+            UnInit();
+        }
+
+        private bool _hasRequestAssets()
+        {
+            foreach( var data in m_request_assets )
+            {
+                if( data.Value.CompleteActions.Count > 0 )
+                    return true;
+            }
+            return false;
         }
 
         public AssetBundle GetBundle()

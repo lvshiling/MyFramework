@@ -52,13 +52,14 @@ namespace GameFramework
 #endif
             if( ResManager.Instance.ResLoadMode == eResLoadMode.Bundle )
             {
-                ResManager.Instance.LoadAsset( _name, (_res_data, _obj) =>
+                ResManager.Instance.LoadAsset( _name, ( _res_data, _obj ) =>
                 {
                     object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes );
                     if ( _call_back != null )
                     {
                         _call_back( datas[0] );
                     }
+                    _res_data.Unload();
                 }, false );
             }
         }

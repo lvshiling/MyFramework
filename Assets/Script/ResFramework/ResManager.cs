@@ -182,13 +182,9 @@ namespace ResFramework
             data.LoadAssetBundle( _asset_name, _action, async );
         }
 
-        public void UnloadAssetBundle( string _bundle_name, bool _all_asset = false )
+        public void RemoveResData( string _name )
         {
-            if( m_res_datas.ContainsKey( _bundle_name ) )
-            {
-                m_res_datas[_bundle_name].Unload( _all_asset );
-                m_res_datas.Remove( _bundle_name );
-            }
+            m_res_datas.Remove( _name );
         }
 
         public Dictionary<string, ResConfig> GetAllConfig()
@@ -221,6 +217,13 @@ namespace ResFramework
                 m_res_datas[_config.BundleName] = data;
                 return data;
             }
+            return null;
+        }
+
+        public ResData GetResData( string _name )
+        {
+            if( m_res_datas.ContainsKey( _name ) )
+                return m_res_datas[_name];
             return null;
         }
     }

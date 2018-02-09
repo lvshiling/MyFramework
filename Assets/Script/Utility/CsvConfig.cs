@@ -19,7 +19,7 @@ namespace Utility
                 TextAsset text = _object as TextAsset;
                 if( reader.OpenSheet( _name, text.bytes ) )
                     _action( reader );
-
+                _data.Unload();
             }, false );
         }
 
@@ -56,6 +56,7 @@ namespace Utility
                     }
                     _dic.Add( new_key, new_value );
                 }
+                _data.Unload();
             }, false );
         }
 
@@ -92,6 +93,7 @@ namespace Utility
                     }
                     _dic.Add( new_key, new_value );
                 }
+                _data.Unload();
             }, false );
         }
 
