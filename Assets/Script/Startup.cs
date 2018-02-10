@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using ResFramework;
 using System;
-using UnityEngine.Networking;
 using Utility;
 using Utility.SheetLite;
 
@@ -17,13 +15,20 @@ namespace GameFramework
         [SerializeField]
         private bool m_check_update = false;
 
+        private GameStateMachine m_game_machine;
+
         void Awake()
         {
+            m_game_machine = new GameStateMachine();
+            m_game_machine.Initialize();
             DontDestroyOnLoad( this );
         }
 
         void Start()
         {
+            m_game_machine.Start();
+
+            //下面是测试 正常应该放在游戏状态机里管理
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
@@ -61,7 +66,7 @@ namespace GameFramework
 
         void Update()
         {
-
+            m_game_machine.Update();
         }
 
         class TestCsv

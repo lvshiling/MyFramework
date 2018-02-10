@@ -34,8 +34,6 @@ namespace ResFramework
 
         private int m_loaded_dependencies_count = 0;
 
-        private bool m_unloading = false;
-
         private int m_reference_count = 0;
 
         private Dictionary<string, RequestAssetData> m_request_assets = new Dictionary<string, RequestAssetData>();
@@ -56,7 +54,6 @@ namespace ResFramework
             m_bundle = null;
             m_bundle_async = true;
             m_loaded_dependencies_count = 0;
-            m_unloading = false;
             m_reference_count = 0;
             m_request_assets.Clear();
             ResManager.Instance.RemoveResData( m_res_config.BundleName );

@@ -185,6 +185,7 @@ namespace ResFramework
         public void RemoveResData( string _name )
         {
             m_res_datas.Remove( _name );
+            Debug.LogFormat( "当前ResData个数：{0}", m_res_datas.Count );
         }
 
         public Dictionary<string, ResConfig> GetAllConfig()
