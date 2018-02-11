@@ -9,6 +9,18 @@ namespace GameFramework
 {
     public class Startup : MonoBehaviour
     {
+        public static event Action<float> EventUpdate;
+
+        public static event Action EventLateUpdate;
+
+        public static event Action EventFixedUpdate;
+
+        public static event Action<bool> EventAppFocus;
+
+        public static event Action<bool> EventAppPause;
+
+        public static event Action EventAppQuit;
+
         [SerializeField]
         private eResLoadMode m_res_load_mode = eResLoadMode.Editor;
 
@@ -37,7 +49,7 @@ namespace GameFramework
                 //测试UI
                 UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                 //测试shader
-                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); }, false );
+                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (__data, __obj) => { Instantiate( __obj ); __data.Unload(); } ); } );
                 //测试自定义csv
                 CsvConfig.LoadCsvConfig( "global_config", (_data) =>
                 {
@@ -67,6 +79,38 @@ namespace GameFramework
         void Update()
         {
             m_game_machine.Update();
+            if( EventUpdate != null )
+                EventUpdate( Time.deltaTime );
+        }
+
+        void FixedUpdate()
+        {
+            if( EventFixedUpdate != null )
+                EventFixedUpdate();
+        }
+
+        void LateUpdate()
+        {
+            if( EventLateUpdate != null )
+                EventLateUpdate();
+        }
+
+        void OnApplicationFocus( bool _focus )
+        {
+            if( EventAppFocus != null )
+                EventAppFocus( _focus );
+        }
+
+        void OnApplicationPause( bool _pause )
+        {
+            if( EventAppPause != null )
+                EventAppPause( _pause );
+        }
+
+        void OnApplicationQuit()
+        {
+            if( EventAppQuit != null )
+                EventAppQuit();
         }
 
         class TestCsv

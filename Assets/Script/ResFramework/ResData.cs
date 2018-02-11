@@ -138,11 +138,12 @@ namespace ResFramework
             {
                 if( data.Key == string.Empty )
                 {
-                    for ( int i = 0; i < data.Value.CompleteActions.Count; i++ )
+                    for ( int i = 0; i < data.Value.CompleteActions.Count; )
                     {
-                        data.Value.CompleteActions[i]( this, null );
+                        Action<ResData, UnityEngine.Object> action = data.Value.CompleteActions[i];
+                        data.Value.CompleteActions.RemoveAt( i );
+                        action( this, null );
                     }
-                    data.Value.CompleteActions.Clear();
                     continue;
                 }
                 _loadAsset( data.Key );
@@ -168,11 +169,12 @@ namespace ResFramework
         {
             if ( m_request_assets.ContainsKey( _name ) )
             {
-                for ( int i = 0; i < m_request_assets[_name].CompleteActions.Count; i++ )
+                for ( int i = 0; i < m_request_assets[_name].CompleteActions.Count; )
                 {
-                    m_request_assets[_name].CompleteActions[i]( this, _obj );
+                    Action<ResData, UnityEngine.Object> action = m_request_assets[_name].CompleteActions[i];
+                    m_request_assets[_name].CompleteActions.RemoveAt( i );
+                    action( this, _obj );
                 }
-                m_request_assets[_name].CompleteActions.Clear();
             }
         }
 
