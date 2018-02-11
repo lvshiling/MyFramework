@@ -51,7 +51,7 @@ namespace Utility
                         }
                         catch( Exception e )
                         {
-                            Debug.LogError( string.Format( "{0} is not a {1} property of {2} !!! \n {3}", key, key_type, type.Name, e.Message ) );
+                            Debug.LogError( string.Format( "表头 {0} 不是{1}类型 检查类 {2} 对应的配置 !!!{3}", key, key_type, type.Name, e.Message ) );
                         }
                     }
                     _dic.Add( new_key, new_value );

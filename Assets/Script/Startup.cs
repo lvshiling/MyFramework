@@ -49,9 +49,9 @@ namespace GameFramework
                 //测试UI
                 UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                 //测试shader
-                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (__data, __obj) => { Instantiate( __obj ); __data.Unload(); } ); } );
+                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
                 //测试自定义csv
-                CsvConfig.LoadCsvConfig( "global_config", (_data) =>
+                CsvConfig.LoadCsvConfig( "global_config", ( _data ) =>
                 {
                     for( int i = 0; i < _data.Count; ++i )
                     {
@@ -60,7 +60,7 @@ namespace GameFramework
                         string value = row["Value"];
                     }
                 } );
-                //测试反射csv
+                ////测试反射csv
                 Dictionary<string, TestCsv> dic = new Dictionary<string, TestCsv>();
                 CsvConfig.LoadCsvConfigWithClassKey<string, TestCsv>( "global_config", dic );
                 Dictionary<int, TestCsv1> dic1 = new Dictionary<int, TestCsv1>();

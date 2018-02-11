@@ -208,6 +208,11 @@ namespace ResFramework
         {
             m_state = ResDataState.ReadyUnload;
             yield return new WaitForEndOfFrame();
+            if( m_reference_count > 0 )
+            {
+                m_state = ResDataState.BundleLoaded;
+                yield break;
+            }
             Debug.LogFormat( "bundle:{0}开始卸载", m_res_config.BundleName );
             for( int i = 0; i < m_res_config.Dependencies.Count; i++ )
             {
