@@ -412,7 +412,7 @@ namespace ResFramework
                     break;
                 }
                 AssetBundleBuild build = new AssetBundleBuild();
-                build.assetBundleName = BuildAssetBundleNameWithAssetPath( item );
+                build.assetBundleName = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( item ).Replace( "assets/", string.Empty ) );
                 build.assetNames = new[] { item };
                 packedAssets.AddRange( build.assetNames );
                 builds.Add( build );

@@ -173,6 +173,29 @@ namespace ResFramework
             LoadAssetBundleAndAsset( m_res_bundle_path[_asset_path], _asset_path, _action, async );
         }
 
+        public void LoadScene( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
+        {
+#if UNITY_EDITOR
+            if( ResLoadMode == eResLoadMode.Editor )
+            {
+                UnityEditor.EditorApplication.LoadLevelInPlayMode( _asset_path );
+                if( _action != null )
+                {
+                    _action( null, null );
+                }
+                return;
+            }
+#endif
+            if( ResLoadMode == eResLoadMode.Editor )
+                return;
+            if( !m_res_bundle_path.ContainsKey( _asset_path ) )
+            {
+                Debug.LogErrorFormat( "加载Scene失败， {0}没有对应的Bundle！" );
+                return;
+            }
+            LoadAssetBundleAndAsset( m_res_bundle_path[_asset_path], string.Empty, _action, async );
+        }
+
         public void LoadAssetBundleAndAsset( string _bundle_name, string _asset_name, Action<ResData, UnityEngine.Object> _action, bool async = true )
         {
             ResConfig config = GetResConfig( _bundle_name );

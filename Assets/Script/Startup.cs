@@ -4,6 +4,7 @@ using ResFramework;
 using System;
 using Utility;
 using Utility.SheetLite;
+using UnityEngine.SceneManagement;
 
 namespace GameFramework
 {
@@ -44,27 +45,33 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                LuaManager.Instance.Init();
-                UIFrameWork.UIManager.Instance.Initialize();
-                //测试UI
-                UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
-                //测试shader
-                ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
-                //测试自定义csv
-                CsvConfig.LoadCsvConfig( "global_config", ( _data ) =>
+                //LuaManager.Instance.Init();
+                //UIFrameWork.UIManager.Instance.Initialize();
+                ////测试UI
+                //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                ////测试shader
+                //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
+                ////测试自定义csv
+                //CsvConfig.LoadCsvConfig( "global_config", (_data) =>
+                //{
+                //    for( int i = 0; i < _data.Count; ++i )
+                //    {
+                //        SheetRow row = _data[i];
+                //        string key = row["Key"];
+                //        string value = row["Value"];
+                //    }
+                //} );
+                //////测试反射csv
+                //Dictionary<string, TestCsv> dic = new Dictionary<string, TestCsv>();
+                //CsvConfig.LoadCsvConfigWithClassKey<string, TestCsv>( "global_config", dic );
+                //Dictionary<int, TestCsv1> dic1 = new Dictionary<int, TestCsv1>();
+                //CsvConfig.LoadCsvConfigWithStructKey<int, TestCsv1>( "global_config1", dic1 );
+                //测试加载场景
+                ResManager.Instance.LoadScene( "Assets/Scene/test/test.unity", (_data, _obj) =>
                 {
-                    for( int i = 0; i < _data.Count; ++i )
-                    {
-                        SheetRow row = _data[i];
-                        string key = row["Key"];
-                        string value = row["Value"];
-                    }
+                    if( _data != null )
+                        SceneManager.LoadScene( "test" );
                 } );
-                ////测试反射csv
-                Dictionary<string, TestCsv> dic = new Dictionary<string, TestCsv>();
-                CsvConfig.LoadCsvConfigWithClassKey<string, TestCsv>( "global_config", dic );
-                Dictionary<int, TestCsv1> dic1 = new Dictionary<int, TestCsv1>();
-                CsvConfig.LoadCsvConfigWithStructKey<int, TestCsv1>( "global_config1", dic1 );
             };
             if( m_check_update )
             {

@@ -25,3 +25,10 @@ searchPath=Assets/Res/TestShader
 searchPattern=*.prefab
 searchOption=AllDirectories
 bundleName=
+
+//test scene
+[BuildAssetsWithScenes]
+searchPath=Assets/Scene/test
+searchPattern=*.unity
+searchOption=AllDirectories
+bundleName=
