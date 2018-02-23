@@ -5,10 +5,11 @@ using System;
 using Utility;
 using Utility.SheetLite;
 using UnityEngine.SceneManagement;
+using Net;
 
 namespace GameFramework
 {
-    public class Startup : MonoBehaviour
+    public class Main : MonoBehaviour
     {
         public static event Action<float> EventUpdate;
 
@@ -86,6 +87,7 @@ namespace GameFramework
         void Update()
         {
             m_game_machine.Update();
+            NetManager.Instance.Update();
             if( EventUpdate != null )
                 EventUpdate( Time.deltaTime );
         }
@@ -116,6 +118,7 @@ namespace GameFramework
 
         void OnApplicationQuit()
         {
+            NetManager.Instance.OnClose();
             if( EventAppQuit != null )
                 EventAppQuit();
         }

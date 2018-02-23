@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Net;
+using System;
 using Utility;
 
 namespace GameFramework
@@ -17,7 +18,7 @@ namespace GameFramework
 
 		public override void OnEnter()
 		{
-            
-		}
+            NetManager.Instance.Init();
+        }
 	}
 }
