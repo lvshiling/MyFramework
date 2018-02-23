@@ -130,9 +130,8 @@ namespace Net
         }
 
         static Queue<KeyValuePair<Type, object>> sEvents = new Queue<KeyValuePair<Type, object>>();
-        /// <summary>
-        /// 交给Command，这里不想关心发给谁。
-        /// </summary>
+
+
         public void Update()
         {
             if ( sEvents.Count > 0 )

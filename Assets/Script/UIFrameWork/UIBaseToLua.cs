@@ -1,8 +1,4 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.UI;
-using XLua;
-using GameFramework;
+﻿using XLua;
 
 namespace UIFrameWork
 {

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package msg;
+
+message TestSignUpResponse
+{
+	  int32 errorCode = 1;
+	  float version = 2;
+}

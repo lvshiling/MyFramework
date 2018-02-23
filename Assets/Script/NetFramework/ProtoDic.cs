@@ -20,6 +20,7 @@ namespace Proto
             7,
             8,
             9,
+            10,
         };
 
       private static List<Type>_protoType = new List<Type>
@@ -34,6 +35,7 @@ namespace Proto
             typeof(PlayerBaseInfo),
             typeof(LoginSuccessfull),
             typeof(LoginFaild),
+            typeof(TestSignUpResponse),
        };
 
        private static readonly Dictionary<RuntimeTypeHandle, MessageParser> Parsers = new Dictionary<RuntimeTypeHandle, MessageParser>()
@@ -48,6 +50,7 @@ namespace Proto
             {typeof(PlayerBaseInfo).TypeHandle,PlayerBaseInfo.Parser },
             {typeof(LoginSuccessfull).TypeHandle,LoginSuccessfull.Parser },
             {typeof(LoginFaild).TypeHandle,LoginFaild.Parser },
+            {typeof(TestSignUpResponse).TypeHandle,TestSignUpResponse.Parser },
        };
 
         public static MessageParser GetMessageParser(RuntimeTypeHandle typeHandle)
