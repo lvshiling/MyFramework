@@ -165,7 +165,8 @@ namespace UIFrameWork
                     return;
                 }
                 GameObject ui_object = Instantiate( prefab ) as GameObject;
-                res_data.Unload();
+                if( res_data != null )
+                    res_data.Unload();
                 ui_object.SetActive( false );
                 ui_object.name = _name;
 
@@ -176,11 +177,9 @@ namespace UIFrameWork
 
                 if ( ui_base.GetType() == typeof( UIBaseToLua ) )
                 {
-                    LuaManager.Instance.RequireLua( string.Format( "UI/{0}", _name ), ( _obj )=> 
-                    {
-                        ui_base.Initialize( _obj );
-                        _action( ui_base );
-                    } );
+                    object[] _objs = LuaManager.Instance.RequireLua( string.Format( "UI/{0}", _name ) );
+                    ui_base.Initialize( _objs[0] );
+                    _action( ui_base );
                 }
                 else
                 {

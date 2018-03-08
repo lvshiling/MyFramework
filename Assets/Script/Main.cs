@@ -46,10 +46,10 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                //LuaManager.Instance.Init();
-                //UIFrameWork.UIManager.Instance.Initialize();
+                LuaManager.Instance.Init();
+                UIFrameWork.UIManager.Instance.Initialize();
                 ////测试UI
-                //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                 ////测试shader
                 //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
                 ////测试自定义csv
@@ -68,11 +68,11 @@ namespace GameFramework
                 //Dictionary<int, TestCsv1> dic1 = new Dictionary<int, TestCsv1>();
                 //CsvConfig.LoadCsvConfigWithStructKey<int, TestCsv1>( "global_config1", dic1 );
                 //测试加载场景
-                ResManager.Instance.LoadScene( "Assets/Scene/test/test.unity", (_data, _obj) =>
-                {
-                    if( _data != null )
-                        SceneManager.LoadScene( "test" );
-                } );
+                //ResManager.Instance.LoadScene( "Assets/Scene/test/test.unity", (_data, _obj) =>
+                //{
+                //    if( _data != null )
+                //        SceneManager.LoadScene( "test" );
+                //} );
             };
             if( m_check_update )
             {

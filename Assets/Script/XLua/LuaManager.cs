@@ -14,22 +14,30 @@ namespace GameFramework
         public void Init()
         {
             m_lua_env = new LuaEnv();
-//            m_lua_env.AddLoader( ( ref string path ) => 
-//            {
-//#if UNITY_EDITOR
-//                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
-//                    return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
-//#endif
-//                return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
-//                TextAsset asset = null;
-//                ResManager.Instance.LoadAsset( string.Format( "Assets/Script/LuaScript/{0}", path ), ( _res_data, _obj ) => 
-//                {
-//                    asset = _obj as TextAsset;
-//                }, false );
-//                return asset.bytes;
-//            } );
-//            m_lua_env.DoString( "require 'Init.lua.txt'" );
-            RequireLua( "Init", null );
+            m_lua_env.AddBuildin( "pb", XLua.LuaDLL.Lua.LoadPb );
+            m_lua_env.AddLoader( (ref string path) =>
+            {
+                if( path.EndsWith( ".txt" ) )
+                {
+                    return System.IO.File.ReadAllBytes( string.Format( "Assets/LuaScript/{0}", path ) );
+                }
+                else
+                    return System.IO.File.ReadAllBytes( string.Format( "Assets/LuaScript/{0}.lua", path ) );
+                //后续加入bundle模式 现在bundle都是回调没加直接返回的
+                //#if UNITY_EDITOR
+                //                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
+                //                    return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
+                //#endif
+                //                return System.IO.File.ReadAllBytes( string.Format( "Assets/Script/LuaScript/{0}", path ) );
+                //                TextAsset asset = null;
+                //                ResManager.Instance.LoadAsset( string.Format( "Assets/Script/LuaScript/{0}", path ), (_res_data, _obj) =>
+                //                {
+                //                    asset = _obj as TextAsset;
+                //                }, false );
+                //                return asset.bytes;
+            } );
+            m_lua_env.DoString( "require 'Init.lua.txt'" );
+            //RequireLua( "Init", null );
         }
 
         public void UnInit()
@@ -37,31 +45,35 @@ namespace GameFramework
             m_lua_env.Dispose();
         }
 
-        public void RequireLua( string _name, Action<object> _call_back )
+        public object[] RequireLua( string _name )
         {
-            _name = string.Format( "Assets/LuaScript/{0}.lua.txt", _name );
-#if UNITY_EDITOR
-            if ( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
-            {
-                object[] datas = m_lua_env.DoString( System.IO.File.ReadAllBytes( _name ) ); 
-                if( _call_back != null )
-                {
-                    _call_back( datas[0] );
-                }
-            }
-#endif
-            if( ResManager.Instance.ResLoadMode == eResLoadMode.Bundle )
-            {
-                ResManager.Instance.LoadAsset( _name, ( _res_data, _obj ) =>
-                {
-                    object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes );
-                    if ( _call_back != null )
-                    {
-                        _call_back( datas[0] );
-                    }
-                    _res_data.Unload();
-                }, false );
-            }
+            return m_lua_env.DoString( System.IO.File.ReadAllBytes( string.Format( "Assets/LuaScript/{0}.lua.txt", _name ) ) );
+            //            if( _txt )
+            //                _name = string.Format( "Assets/LuaScript/{0}.lua.txt", _name );
+            //            else
+            //                _name = string.Format( "Assets/LuaScript/{0}.lua", _name );
+            //#if UNITY_EDITOR
+            //            if ( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
+            //            {
+            //                object[] datas = m_lua_env.DoString( System.IO.File.ReadAllBytes( _name ) ); 
+            //                if( _call_back != null )
+            //                {
+            //                    _call_back( datas[0] );
+            //                }
+            //            }
+            //#endif
+            //            if( ResManager.Instance.ResLoadMode == eResLoadMode.Bundle )
+            //            {
+            //                ResManager.Instance.LoadAsset( _name, ( _res_data, _obj ) =>
+            //                {
+            //                    object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes );
+            //                    if ( _call_back != null )
+            //                    {
+            //                        _call_back( datas[0] );
+            //                    }
+            //                    _res_data.Unload();
+            //                }, false );
+            //            }
         }
 
         //      /// <summary>

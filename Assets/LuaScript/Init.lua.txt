@@ -4,4 +4,5 @@
 },]]
 
 
-CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );
+--CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );
+--require "ltn12"
