@@ -7,7 +7,6 @@ using UnityEditor;
 
 namespace ResFramework
 {
-    //注意 unity缓存机制是以去掉路径和后缀后的包名来做缓存 所以可能存在不同的包缓存在同一文件夹下 所以一定要保证去掉路径和后缀后不能有包名相同
     public class AssetBundleBuilder
     {
         public static string Path = "Assets/StreamingAssets";
@@ -298,9 +297,11 @@ namespace ResFramework
             return ret;
         }
 
-        public static string LuaDir = "Assets/Script/LuaScript/";
+        public static string LuaDir = "Assets/test/";
+        //public static string LuaDir = "Assets/Script/LuaScript/";
         public static string LuaGenDir = "Assets/LuaScriptTxt/";
         //最开始所有lua都是.lua 但是不能对.lua打包 所以打包时转换为.txt但是发现转换后打包出来的包的hash都变了 所以就干脆让所有lua都是.txt格式算了
+        [MenuItem( "打包/生成lua文本格式" )]
         public static void CreateLuaTxt()
         {
             if( Directory.Exists( LuaGenDir ) )
@@ -311,7 +312,6 @@ namespace ResFramework
             float step = luas.Count > 0 ? ( 1.0f / luas.Count ) : 1.0f;
             float prog = 0.0f;
 
-            List<string> res = new List<string>();
             foreach( string lua in luas )
             {
                 prog += step;
@@ -322,26 +322,63 @@ namespace ResFramework
                 if( !Directory.Exists( path ) )
                     Directory.CreateDirectory( path );
                 File.Copy( lua, gen, true );
-                res.Add( gen );
             }
 
             EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
+        }
 
-            int length = 0;
-            foreach( string lua in res )
+        [MenuItem( "打包/生成lua二进制格式" )]
+        public static void CreateLuaByte()
+        {
+            if( Directory.Exists( LuaGenDir ) )
+                Directory.Delete( LuaGenDir, true );
+            Directory.CreateDirectory( LuaGenDir );
+
+            List<string> luas = GetFiles( new DirectoryInfo( LuaDir ) );
+            float step = luas.Count > 0 ? ( 1.0f / luas.Count ) : 1.0f;
+            float prog = 0.0f;
+
+            int length = Application.dataPath.Length;
+            foreach( string lua in luas )
             {
-                if( length == 0 )
-                    length = lua.IndexOf( LuaGenDir );
-                AssetImporter import = AssetImporter.GetAtPath( lua.Substring( length ) );
-                string bundle_name = lua.Substring( length + LuaGenDir.Length );
-                bundle_name = bundle_name.Replace( ".lua.txt", "" );
-                import.assetBundleName = string.Format( "lua/{0}.assetbundle", bundle_name );
+                prog += step;
+                EditorUtility.DisplayProgressBar( "Copy LUA", lua, prog );
+
+                string gen = lua.Replace( LuaDir, LuaGenDir ) + ".bytes";
+                string path = System.IO.Path.GetDirectoryName( gen );
+                if( !Directory.Exists( path ) )
+                    Directory.CreateDirectory( path );
+
+                FileStream fs = new FileStream( gen, FileMode.OpenOrCreate );
+                BinaryWriter binWriter = new BinaryWriter( fs );
+                binWriter.Write( System.IO.File.ReadAllBytes( lua ), 0, 100 );
+
+                binWriter.Close();
+                fs.Close();
             }
 
+            EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
+        }
+
+        [MenuItem( "打包/打包lua" )]
+        public static void PackLua()
+        {
+            List<string> luas = GetFiles( new DirectoryInfo( LuaGenDir ) );
+            List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
+            int length = Application.dataPath.Length;
+            foreach( string lua in luas )
+            {
+                AssetBundleBuild build = new AssetBundleBuild();
+                build.assetBundleName = string.Format( "lua/{0}.assetbundle", System.IO.Path.GetFileNameWithoutExtension( lua ) );
+                build.assetNames = new string[] { string.Format( "Assets{0}", lua.Substring( length ) ) };
+                builds.Add( build );
+            }
+
+            BuildPipeline.BuildAssetBundles( Path, builds.ToArray(), Options, TargetPlatform );
         }
     }
 }

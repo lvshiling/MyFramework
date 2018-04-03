@@ -15,6 +15,7 @@ namespace GameFramework
         {
             m_lua_env = new LuaEnv();
             m_lua_env.AddBuildin( "pb", XLua.LuaDLL.Lua.LoadPb );
+            //m_lua_env.AddBuildin( "rapidjson", XLua.LuaDLL.Lua.LoadRapidJson );
             m_lua_env.AddLoader( (ref string path) =>
             {
                 if( path.EndsWith( ".txt" ) )

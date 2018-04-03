@@ -6,3 +6,11 @@
 
 --CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );
 --require "ltn12"
+
+--测试rapidjson
+--local rapidjson = require('rapidjson')
+--local t = rapidjson.decode('{"a":123}')
+--print(t.a)
+--t.a = 456
+--local s = rapidjson.encode(t)
+--print('json', s)

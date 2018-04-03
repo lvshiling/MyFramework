@@ -34,8 +34,11 @@ public class GenProto
         string dir = Application.dataPath.ToLower() + "/LuaScript/PbLua";
         paths.Clear(); files.Clear(); Recursive( dir );
 
-        string protoc = "d:/protobuf-2.4.1/src/protoc.exe";
-        string protoc_gen_dir = "\"d:/protoc-gen-lua/plugin/protoc-gen-lua.bat\"";
+        //"D:/protoc-3.5.1-win32/protoc.exe";
+        string protoc = Application.dataPath.Replace( "Assets", "Tools/protoc.exe" );
+        //"\"d:/protoc-gen-lua-master/plugin/protoc-gen-lua.bat\""
+        string protoc_gen_lua = Application.dataPath.Replace( "Assets", "Tools/protoc-gen-lua-master/plugin/protoc-gen-lua.bat" );
+        string protoc_gen_dir = string.Format( "\"{0}\"", protoc_gen_lua );
 
         foreach (string f in files) {
             string name = Path.GetFileName(f);
