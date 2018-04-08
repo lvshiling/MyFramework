@@ -64,8 +64,10 @@ public class GenProto
     [MenuItem( "Tools/构建proto.pb" )]
     public static void BuildProtobufPbFile()
     {
-        string dir = Application.dataPath.ToLower() + "/LuaScript/PbLua";
+        string dir = Application.dataPath.Replace( "Assets", "Tools/Proto/LuaProto" );
         paths.Clear(); files.Clear(); Recursive( dir );
+
+        string outDir = Application.dataPath + "/LuaScript/PbLua/";
 
         //"D:/protoc-3.5.1-win32/protoc.exe";
         string protoc = Application.dataPath.Replace( "Assets", "Tools/protoc.exe" );
@@ -78,7 +80,7 @@ public class GenProto
 
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = protoc;
-            info.Arguments = "--descriptor_set_out=" + name.Replace( ".proto", ".pb.bytes" ) + " " + name;
+            info.Arguments = "--descriptor_set_out=" + outDir + name.Replace( ".proto", ".pb.bytes" ) + " " + name;
             info.WindowStyle = ProcessWindowStyle.Normal;
             info.UseShellExecute = true;
             info.WorkingDirectory = dir;
