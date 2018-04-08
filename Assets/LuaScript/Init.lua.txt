@@ -7,10 +7,28 @@
 --CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );
 --require "ltn12"
 
---测试rapidjson
---local rapidjson = require('rapidjson')
---local t = rapidjson.decode('{"a":123}')
---print(t.a)
---t.a = 456
---local s = rapidjson.encode(t)
---print('json', s)
+--[[测试rapidjson
+local rapidjson = require('rapidjson')
+local t = rapidjson.decode('{"a":123}')
+print(t.a)
+t.a = 456
+local s = rapidjson.encode(t)
+print('json', s)]]
+
+--测试pbc
+local protobuf = require 'protobuf.lua.txt'
+protobuf.register(CS.UnityEngine.Resources.Load('login.pb').bytes)
+
+local login = {}
+login.id = 1000;
+login.name = "zyp";
+login.email = "1@qq.com";
+
+--序列化
+local encode = protobuf.encode('LoginRequest', login)
+
+-- 反序列化
+local login_decode = protobuf.decode('LoginRequest', encode)
+
+print( login_decode.id, login_decode.name, login_decode.email )
+

@@ -2,7 +2,7 @@
 message LoginRequest {
 	required int32 id = 1;
 	required string name = 2;
-	optional string email = 3;
+	required string email = 3;
 }
 
 message LoginResponse {

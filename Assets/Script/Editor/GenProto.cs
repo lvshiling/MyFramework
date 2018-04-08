@@ -28,7 +28,7 @@ public class GenProto
         }
     }
 
-    [MenuItem("Tools/Build Protobuf-lua-gen File")]
+    [MenuItem("Tools/构建proto.lua")]
     public static void BuildProtobufFile()
     {
         string dir = Application.dataPath.ToLower() + "/LuaScript/PbLua";
@@ -48,6 +48,7 @@ public class GenProto
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = protoc;
             info.Arguments = " --lua_out=./ --plugin=protoc-gen-lua=" + protoc_gen_dir + " " + name;
+            UnityEngine.Debug.Log( info.Arguments );
             info.WindowStyle = ProcessWindowStyle.Normal;
             info.UseShellExecute = true;
             info.WorkingDirectory = dir;
@@ -55,6 +56,36 @@ public class GenProto
             UnityEngine.Debug.Log(info.FileName + " " + info.Arguments);
 
             Process pro = Process.Start(info);
+            pro.WaitForExit();
+        }
+        AssetDatabase.Refresh();
+    }
+
+    [MenuItem( "Tools/构建proto.pb" )]
+    public static void BuildProtobufPbFile()
+    {
+        string dir = Application.dataPath.ToLower() + "/LuaScript/PbLua";
+        paths.Clear(); files.Clear(); Recursive( dir );
+
+        //"D:/protoc-3.5.1-win32/protoc.exe";
+        string protoc = Application.dataPath.Replace( "Assets", "Tools/protoc.exe" );
+
+        foreach( string f in files )
+        {
+            string name = Path.GetFileName( f );
+            string ext = Path.GetExtension( f );
+            if( !ext.Equals( ".proto" ) ) continue;
+
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = protoc;
+            info.Arguments = "--descriptor_set_out=" + name.Replace( ".proto", ".pb.bytes" ) + " " + name;
+            info.WindowStyle = ProcessWindowStyle.Normal;
+            info.UseShellExecute = true;
+            info.WorkingDirectory = dir;
+            info.ErrorDialog = true;
+            UnityEngine.Debug.Log( info.FileName + " " + info.Arguments );
+
+            Process pro = Process.Start( info );
             pro.WaitForExit();
         }
         AssetDatabase.Refresh();

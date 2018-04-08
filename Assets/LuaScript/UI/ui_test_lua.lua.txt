@@ -1,23 +1,9 @@
 
---CS.GameFramework.LuaManager.Instance:RequireLua( "PbLua/login_pb", nil, false );
-require "PbLua/login_pb";
-
 local t = {};
 
 function t.OnLoad( _obj_root )
     --t.image_bg = _obj_root:GetComponent( "Image" );
     --t.image_bg.sprite = nil;
-
-
-    local msg = LoginRequest();                                 
-    msg.id = 100;
-    msg.name = "zyp";
-    msg.email = "1111";
-    local pb_data = msg:SerializeToString()    
-
-    local msg1 = LoginRequest();  
-    msg1:ParseFromString(pb_data)
-    print('LoginRequest decoder: '..tostring(msg1)..'id: '..msg1.id..' email: '..msg1.email)
 end
 
 function t.PreShow( ... )
