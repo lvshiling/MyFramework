@@ -1,9 +1,16 @@
 //打包lua
-[BuildAssetsWithFilename]
+[BuildAssetsWithAssetBundleName]
 searchPath=Assets/LuaScript
 searchPattern=*.txt
 searchOption=AllDirectories
-bundleName=
+bundleName=luas.assetbundle
+
+//打包PB
+[BuildAssetsWithAssetBundleName]
+searchPath=Assets/LuaScript/Pb
+searchPattern=*.bytes
+searchOption=AllDirectories
+bundleName=pbs.assetbundle
 
 //打包配置
 [BuildAssetsWithAssetBundleName]

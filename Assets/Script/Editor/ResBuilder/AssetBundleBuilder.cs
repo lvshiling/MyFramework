@@ -301,7 +301,7 @@ namespace ResFramework
         //public static string LuaDir = "Assets/Script/LuaScript/";
         public static string LuaGenDir = "Assets/LuaScriptTxt/";
         //最开始所有lua都是.lua 但是不能对.lua打包 所以打包时转换为.txt但是发现转换后打包出来的包的hash都变了 所以就干脆让所有lua都是.txt格式算了
-        [MenuItem( "打包/生成lua文本格式" )]
+        //[MenuItem( "打包/生成lua文本格式" )]
         public static void CreateLuaTxt()
         {
             if( Directory.Exists( LuaGenDir ) )
@@ -329,7 +329,7 @@ namespace ResFramework
             AssetDatabase.SaveAssets();
         }
 
-        [MenuItem( "打包/生成lua二进制格式" )]
+        //[MenuItem( "打包/生成lua二进制格式" )]
         public static void CreateLuaByte()
         {
             if( Directory.Exists( LuaGenDir ) )
@@ -364,7 +364,7 @@ namespace ResFramework
             AssetDatabase.SaveAssets();
         }
 
-        [MenuItem( "打包/打包lua" )]
+        //[MenuItem( "打包/打包lua" )]
         public static void PackLua()
         {
             List<string> luas = GetFiles( new DirectoryInfo( LuaGenDir ) );

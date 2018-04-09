@@ -16,8 +16,9 @@ local s = rapidjson.encode(t)
 print('json', s)]]
 
 --测试pbc
-local protobuf = require 'protobuf.lua.txt'
-protobuf.register(CS.UnityEngine.Resources.Load('login.pb').bytes)
+local protobuf = require 'protobuf'
+protobuf.register( CS.Game.LuaHelper.LoadPb( "login" ) )
+--protobuf.register(CS.UnityEngine.Resources.Load('login.pb').bytes)
 
 local login = {}
 login.id = 1000;

@@ -58,7 +58,6 @@ public static class XLuaGenConfig
                 typeof(System.Action<Transform>),
                 typeof(System.Action<RectTransform>),
 
-                typeof(LuaManager),
             };
 
     //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface

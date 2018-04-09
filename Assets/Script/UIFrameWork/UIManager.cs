@@ -177,9 +177,11 @@ namespace UIFrameWork
 
                 if ( ui_base.GetType() == typeof( UIBaseToLua ) )
                 {
-                    object[] _objs = LuaManager.Instance.RequireLua( string.Format( "UI/{0}", _name ) );
-                    ui_base.Initialize( _objs[0] );
-                    _action( ui_base );
+                    LuaManager.Instance.RequireLua( string.Format( "UI/{0}", _name ), ( _obj ) => 
+                    {
+                        ui_base.Initialize( _obj );
+                        _action( ui_base );
+                    } );
                 }
                 else
                 {

@@ -67,7 +67,7 @@ public class GenProto
         string dir = Application.dataPath.Replace( "Assets", "Tools/Proto/LuaProto" );
         paths.Clear(); files.Clear(); Recursive( dir );
 
-        string outDir = Application.dataPath + "/LuaScript/PbLua/";
+        string outDir = Application.dataPath + "/LuaScript/Pb/";
 
         //"D:/protoc-3.5.1-win32/protoc.exe";
         string protoc = Application.dataPath.Replace( "Assets", "Tools/protoc.exe" );

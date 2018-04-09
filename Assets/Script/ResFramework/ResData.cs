@@ -105,7 +105,7 @@ namespace ResFramework
                 m_state = ResDataState.LoadingDependencies;
                 for ( int i = 0; i < m_res_config.Dependencies.Count; i++ )
                 {
-                    ResManager.Instance.LoadAssetBundleAndAsset( m_res_config.Dependencies[i], string.Empty, _dependenciesLoaded, _async );
+                    ResManager.Instance.LoadBundle( m_res_config.Dependencies[i], _dependenciesLoaded, _async );
                 }
             }
         }
@@ -134,6 +134,7 @@ namespace ResFramework
             }
             m_state = ResDataState.BundleLoaded;
             m_bundle = _bundle;
+            List<Action<ResData, UnityEngine.Object>> actions = new List<Action<ResData, UnityEngine.Object>>();
             foreach ( var data in m_request_assets )
             {
                 if( data.Key == string.Empty )
@@ -142,11 +143,15 @@ namespace ResFramework
                     {
                         Action<ResData, UnityEngine.Object> action = data.Value.CompleteActions[i];
                         data.Value.CompleteActions.RemoveAt( i );
-                        action( this, null );
+                        actions.Add( action );
                     }
                     continue;
                 }
                 _loadAsset( data.Key );
+            }
+            for( int i = 0; i < actions.Count; ++i )
+            {
+                actions[i]( this, null );
             }
         }
 

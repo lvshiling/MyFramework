@@ -43,7 +43,7 @@ namespace ResFramework
                 for( int i = 0; i < m_compress_count; i++ )
                 {
                     Debug.LogFormat( "开始解压bundle: {0}", m_compress_res[i] );
-                    ResManager.Instance.LoadAssetBundleAndAsset( m_compress_res[i], String.Empty, _onBundleLoaded );
+                    ResManager.Instance.LoadBundle( m_compress_res[i], _onBundleLoaded );
                 }
                 m_complete_action = _complete;
             }

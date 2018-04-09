@@ -46,10 +46,16 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                LuaManager.Instance.Init();
+                ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
+                {
+                    ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
+                    {
+                        LuaManager.Instance.Init();
+                        ////测试UI
+                        UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                    } );
+                } );
                 UIFrameWork.UIManager.Instance.Initialize();
-                ////测试UI
-                UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                 ////测试shader
                 //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
                 ////测试自定义csv

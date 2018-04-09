@@ -7,4 +7,5 @@ message LoginRequest {
 
 message LoginResponse {
 	required int32 id = 1;
+	required string name = 2;
 }

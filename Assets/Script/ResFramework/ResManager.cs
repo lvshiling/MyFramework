@@ -150,6 +150,21 @@ namespace ResFramework
             }
         }
 
+        public void LoadBundle( string _bundle_name, Action<ResData, UnityEngine.Object> _action, bool async = true )
+        {
+#if UNITY_EDITOR
+            if( ResLoadMode == eResLoadMode.Editor )
+            {
+                if( _action != null )
+                {
+                    _action( null, null );
+                }
+                return;
+            }
+#endif
+            _loadAssetBundleAndAsset( _bundle_name, string.Empty, _action, async );
+        }
+
         public void LoadAsset( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
         {
 #if UNITY_EDITOR
@@ -170,7 +185,7 @@ namespace ResFramework
                 Debug.LogErrorFormat( "加载Asset失败， {0}没有对应的Bundle！" );
                 return;
             }
-            LoadAssetBundleAndAsset( m_res_bundle_path[_asset_path], _asset_path, _action, async );
+            _loadAssetBundleAndAsset( m_res_bundle_path[_asset_path], _asset_path, _action, async );
         }
 
         public void LoadScene( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
@@ -193,16 +208,7 @@ namespace ResFramework
                 Debug.LogErrorFormat( "加载Scene失败， {0}没有对应的Bundle！" );
                 return;
             }
-            LoadAssetBundleAndAsset( m_res_bundle_path[_asset_path], string.Empty, _action, async );
-        }
-
-        public void LoadAssetBundleAndAsset( string _bundle_name, string _asset_name, Action<ResData, UnityEngine.Object> _action, bool async = true )
-        {
-            ResConfig config = GetResConfig( _bundle_name );
-            if( config == null )
-                return;
-            ResData data = GetResData( config, true );
-            data.LoadAssetBundle( _asset_name, _action, async );
+            _loadAssetBundleAndAsset( m_res_bundle_path[_asset_path], string.Empty, _action, async );
         }
 
         public void RemoveResData( string _name )
@@ -226,6 +232,7 @@ namespace ResFramework
         {
             if( !m_res_config.ContainsKey( _bundle_name ) )
             {
+                Debug.LogErrorFormat( "没有包名为：{0} 的Bundle", _bundle_name );
                 return null;
             }
             return m_res_config[_bundle_name];
@@ -249,6 +256,15 @@ namespace ResFramework
             if( m_res_datas.ContainsKey( _name ) )
                 return m_res_datas[_name];
             return null;
+        }
+
+        private void _loadAssetBundleAndAsset( string _bundle_name, string _asset_name, Action<ResData, UnityEngine.Object> _action, bool async = true )
+        {
+            ResConfig config = GetResConfig( _bundle_name );
+            if( config == null )
+                return;
+            ResData data = GetResData( config, true );
+            data.LoadAssetBundle( _asset_name, _action, async );
         }
     }
 

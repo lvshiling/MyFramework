@@ -2,24 +2,23 @@
 local t = {};
 
 function t.OnLoad( _obj_root )
-    --t.image_bg = _obj_root:GetComponent( "Image" );
-    --t.image_bg.sprite = nil;
+	print( "OnLoad" );
 end
 
 function t.PreShow( ... )
-    
+    print( "PreShow" );
 end
 
 function t.OnShow( ... )
-
+	print( "OnShow" );
 end
 
 function t.OnHide()
-
+	print( "OnHide" );
 end
 
 function t.OnUnload()
-
+	print( "OnUnload" );
 end
 
 return t;
