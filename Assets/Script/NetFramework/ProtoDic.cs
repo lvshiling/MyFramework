@@ -21,6 +21,8 @@ namespace Proto
             8,
             9,
             10,
+            11,
+            12,
         };
 
       private static List<Type>_protoType = new List<Type>
@@ -35,6 +37,8 @@ namespace Proto
             typeof(PlayerBaseInfo),
             typeof(LoginSuccessfull),
             typeof(LoginFaild),
+            typeof(LoginRequest),
+            typeof(LoginResponse),
             typeof(TestSignUpResponse),
        };
 
@@ -50,6 +54,8 @@ namespace Proto
             {typeof(PlayerBaseInfo).TypeHandle,PlayerBaseInfo.Parser },
             {typeof(LoginSuccessfull).TypeHandle,LoginSuccessfull.Parser },
             {typeof(LoginFaild).TypeHandle,LoginFaild.Parser },
+            {typeof(LoginRequest).TypeHandle,LoginRequest.Parser },
+            {typeof(LoginResponse).TypeHandle,LoginResponse.Parser },
             {typeof(TestSignUpResponse).TypeHandle,TestSignUpResponse.Parser },
        };
 

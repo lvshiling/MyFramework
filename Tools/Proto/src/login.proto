@@ -37,8 +37,9 @@ message PlayerBaseInfo
 
 message LoginSuccessfull
 {
-	
 	PlayerBaseInfo playerBaseInfo  = 1;
+	string account = 2;
+	string passward =3;
 }
 
  

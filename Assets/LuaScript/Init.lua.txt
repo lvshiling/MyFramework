@@ -14,13 +14,13 @@ print(t.a)
 t.a = 456
 local s = rapidjson.encode(t)
 print('json', s)]]
-
+require 'Json'
 --测试pbc
 local protobuf = require 'protobuf'
-protobuf.register( CS.Game.LuaHelper.LoadPb( "login" ) )
---protobuf.register(CS.UnityEngine.Resources.Load('login.pb').bytes)
+--protobuf.register( CS.Game.LuaHelper.LoadPb( "login" ) )
+--protobuf.register( CS.Game.LuaHelper.LoadPb('loginForLua') )
 
-local login = {}
+--[[local login = {}
 login.id = 1000;
 login.name = "zyp";
 login.email = "1@qq.com";
@@ -31,5 +31,12 @@ local encode = protobuf.encode('LoginRequest', login)
 -- 反序列化
 local login_decode = protobuf.decode('LoginRequest', encode)
 
-print( login_decode.id, login_decode.name, login_decode.email )
+print( login_decode.id, login_decode.name, login_decode.email )]]
+
+function TestPbc( _msg )
+    print( _msg );
+    local tbData = Json.Decode( _msg );
+    print( tbData );
+    print( Json.Encode( tbData ) );
+end
 

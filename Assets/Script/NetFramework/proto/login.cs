@@ -27,12 +27,13 @@ namespace Msg {
             "ZRgBIAEoCRIPCgdjb250ZW50GAIgASgJIigKB1RvY0NoYXQSDAoEbmFtZRgB",
             "IAEoCRIPCgdjb250ZW50GAIgASgJIioKBUxvZ2luEg8KB2FjY291bnQYASAB",
             "KAkSEAoIcGFzc3dhcmQYAiABKAkiMAoOUGxheWVyQmFzZUluZm8SEAoIUGxh",
-            "eWVySUQYASABKA0SDAoETmFtZRgCIAEoCSI/ChBMb2dpblN1Y2Nlc3NmdWxs",
+            "eWVySUQYASABKA0SDAoETmFtZRgCIAEoCSJiChBMb2dpblN1Y2Nlc3NmdWxs",
             "EisKDnBsYXllckJhc2VJbmZvGAEgASgLMhMubXNnLlBsYXllckJhc2VJbmZv",
-            "IpQBCgpMb2dpbkZhaWxkEicKBGNvZGUYASABKA4yGS5tc2cuTG9naW5GYWls",
-            "ZC5FcnJvckNvZGUiXQoJRXJyb3JDb2RlEh0KGUFjY291bnRPclBhc3N3YXJk",
-            "Tm90TWF0Y2gQABIQCgxBY2NJREludmFsaWQQARIPCgtMb2dpblJlcGVhdBAC",
-            "Eg4KCklubmVyRXJyb3IQA2IGcHJvdG8z"));
+            "Eg8KB2FjY291bnQYAiABKAkSEAoIcGFzc3dhcmQYAyABKAkilAEKCkxvZ2lu",
+            "RmFpbGQSJwoEY29kZRgBIAEoDjIZLm1zZy5Mb2dpbkZhaWxkLkVycm9yQ29k",
+            "ZSJdCglFcnJvckNvZGUSHQoZQWNjb3VudE9yUGFzc3dhcmROb3RNYXRjaBAA",
+            "EhAKDEFjY0lESW52YWxpZBABEg8KC0xvZ2luUmVwZWF0EAISDgoKSW5uZXJF",
+            "cnJvchADYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -41,7 +42,7 @@ namespace Msg {
             new pbr::GeneratedClrTypeInfo(typeof(global::Msg.TocChat), global::Msg.TocChat.Parser, new[]{ "Name", "Content" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Msg.Login), global::Msg.Login.Parser, new[]{ "Account", "Passward" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Msg.PlayerBaseInfo), global::Msg.PlayerBaseInfo.Parser, new[]{ "PlayerID", "Name" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Msg.LoginSuccessfull), global::Msg.LoginSuccessfull.Parser, new[]{ "PlayerBaseInfo" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Msg.LoginSuccessfull), global::Msg.LoginSuccessfull.Parser, new[]{ "PlayerBaseInfo", "Account", "Passward" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Msg.LoginFaild), global::Msg.LoginFaild.Parser, new[]{ "Code" }, null, new[]{ typeof(global::Msg.LoginFaild.Types.ErrorCode) }, null)
           }));
     }
@@ -799,6 +800,8 @@ namespace Msg {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public LoginSuccessfull(LoginSuccessfull other) : this() {
       PlayerBaseInfo = other.playerBaseInfo_ != null ? other.PlayerBaseInfo.Clone() : null;
+      account_ = other.account_;
+      passward_ = other.passward_;
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -817,6 +820,28 @@ namespace Msg {
       }
     }
 
+    /// <summary>Field number for the "account" field.</summary>
+    public const int AccountFieldNumber = 2;
+    private string account_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Account {
+      get { return account_; }
+      set {
+        account_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "passward" field.</summary>
+    public const int PasswardFieldNumber = 3;
+    private string passward_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Passward {
+      get { return passward_; }
+      set {
+        passward_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as LoginSuccessfull);
@@ -831,6 +856,8 @@ namespace Msg {
         return true;
       }
       if (!object.Equals(PlayerBaseInfo, other.PlayerBaseInfo)) return false;
+      if (Account != other.Account) return false;
+      if (Passward != other.Passward) return false;
       return true;
     }
 
@@ -838,6 +865,8 @@ namespace Msg {
     public override int GetHashCode() {
       int hash = 1;
       if (playerBaseInfo_ != null) hash ^= PlayerBaseInfo.GetHashCode();
+      if (Account.Length != 0) hash ^= Account.GetHashCode();
+      if (Passward.Length != 0) hash ^= Passward.GetHashCode();
       return hash;
     }
 
@@ -852,6 +881,14 @@ namespace Msg {
         output.WriteRawTag(10);
         output.WriteMessage(PlayerBaseInfo);
       }
+      if (Account.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(Account);
+      }
+      if (Passward.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Passward);
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -859,6 +896,12 @@ namespace Msg {
       int size = 0;
       if (playerBaseInfo_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(PlayerBaseInfo);
+      }
+      if (Account.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Account);
+      }
+      if (Passward.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Passward);
       }
       return size;
     }
@@ -873,6 +916,12 @@ namespace Msg {
           playerBaseInfo_ = new global::Msg.PlayerBaseInfo();
         }
         PlayerBaseInfo.MergeFrom(other.PlayerBaseInfo);
+      }
+      if (other.Account.Length != 0) {
+        Account = other.Account;
+      }
+      if (other.Passward.Length != 0) {
+        Passward = other.Passward;
       }
     }
 
@@ -889,6 +938,14 @@ namespace Msg {
               playerBaseInfo_ = new global::Msg.PlayerBaseInfo();
             }
             input.ReadMessage(playerBaseInfo_);
+            break;
+          }
+          case 18: {
+            Account = input.ReadString();
+            break;
+          }
+          case 26: {
+            Passward = input.ReadString();
             break;
           }
         }

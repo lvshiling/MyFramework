@@ -19,6 +19,8 @@ func init() {	// 这里我们注册 protobuf 消息)
     Processor.Register(&PlayerBaseInfo{})
     Processor.Register(&LoginSuccessfull{})
     Processor.Register(&LoginFaild{})
+    Processor.Register(&LoginRequest{})
+    Processor.Register(&LoginResponse{})
     Processor.Register(&TestSignUpResponse{})
 
 }

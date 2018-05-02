@@ -102,25 +102,28 @@ namespace GameFramework
         //	return lua.NewTable();
         //}
 
-        //      /// <summary>
-        //      ///     调用Lua层函数（请仅用在用户输入事件或其他非频繁调用的地方）
-        //      /// </summary>
-        //      /// <param name="func">函数地址，可以为math.max等</param>
-        //      /// <param name="args">调用参数</param>
-        //      public static void Call(string func, params object[] args) {
-        //          if (lua == null) {
-        //		Logger.Error("Lua.Initialize should be called before Lua.Call");
-        //              return;
-        //          }
+        /// <summary>
+        ///     调用Lua层函数（请仅用在用户输入事件或其他非频繁调用的地方）
+        /// </summary>
+        /// <param name="func">函数地址，可以为math.max等</param>
+        /// <param name="args">调用参数</param>
+        public void Call( string func, params object[] args )
+        {
+            if( m_lua_env == null )
+            {
+                Debug.LogError( "Lua.Initialize should be called before Lua.Call" );
+                return;
+            }
 
-        //          LuaFunction f = lua.Global.GetInPath<LuaFunction>(func);
-        //          if (f == null) {
-        //		Logger.Error("Lua.Call error no function named : " + func);
-        //              return;
-        //          }
-
-        //          f.Invoke(args);
-        //      }
+            LuaFunction f = m_lua_env.Global.GetInPath<LuaFunction>( func );
+            if( f == null )
+            {
+                Debug.LogError( "Lua.Call error no function named : " + func );
+                return;
+            }
+            
+            f.Call( args );
+        }
 
         //      /// <summary>
         //      ///     直接指定返回值的Call

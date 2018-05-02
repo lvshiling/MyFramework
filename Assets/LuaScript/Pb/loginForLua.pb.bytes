@@ -1,0 +1,11 @@
+
+¤
+loginForLua.proto"Z
+LoginRequest
+id (Rid
+name (	Rname
+email (	Remail
+sid (Rsid"3
+LoginResponse
+id (Rid
+name (	Rname

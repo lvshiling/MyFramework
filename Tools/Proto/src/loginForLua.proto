@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package msg;
+
+message LoginRequest {
+	 int32 id = 1;
+	 string name = 2;
+	 string email = 3;
+	 int32 sid = 4;
+}
+
+message LoginResponse {
+	 int32 id = 1;
+	 string name = 2;
+}

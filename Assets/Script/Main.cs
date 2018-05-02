@@ -6,6 +6,9 @@ using Utility;
 using Utility.SheetLite;
 using UnityEngine.SceneManagement;
 using Net;
+using System.Text;
+using System.IO;
+using Google.Protobuf;
 
 namespace GameFramework
 {
@@ -46,13 +49,26 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
+                ResManager.Instance.LoadBundle( "pb.assetbundle", ( _data, _obj ) =>
                 {
                     ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
                     {
                         LuaManager.Instance.Init();
                         ////测试UI
-                        UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                        //测试pbc
+                        //Msg.LoginRequest msg = new Msg.LoginRequest();
+                        //msg.Id = 111;
+                        //msg.Name = "zyp";
+                        //msg.Email = "651115152";
+                        //msg.Sid = 1000;
+                        //byte[] result;
+                        //using( MemoryStream ms = new MemoryStream() )
+                        //{
+                        //    msg.WriteTo( ms );
+                        //    result = ms.ToArray();
+                        //}
+                        //LuaManager.Instance.Call( "TestPbc", Encoding.UTF8.GetString( result, 0, result.Length ) );
                     } );
                 } );
                 UIFrameWork.UIManager.Instance.Initialize();
