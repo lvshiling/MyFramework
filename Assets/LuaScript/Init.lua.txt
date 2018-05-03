@@ -14,29 +14,48 @@ print(t.a)
 t.a = 456
 local s = rapidjson.encode(t)
 print('json', s)]]
-require 'Json'
 --测试pbc
-local protobuf = require 'protobuf'
---protobuf.register( CS.Game.LuaHelper.LoadPb( "login" ) )
---protobuf.register( CS.Game.LuaHelper.LoadPb('loginForLua') )
+local pb = require 'protobuf'
+pb.register( CS.Game.LuaHelper.LoadPb('loginForLua') )
 
---[[local login = {}
+local login = {}
 login.id = 1000;
 login.name = "zyp";
 login.email = "1@qq.com";
 
 --序列化
-local encode = protobuf.encode('LoginRequest', login)
+local encode = pb.encode('msg.LoginRequest', login)
 
 -- 反序列化
-local login_decode = protobuf.decode('LoginRequest', encode)
-
-print( login_decode.id, login_decode.name, login_decode.email )]]
-
+local login_decode = pb.decode('msg.LoginRequest', encode)
+print( login_decode.id, login_decode.name, login_decode.email )
 function TestPbc( _msg )
     print( _msg );
-    local tbData = Json.Decode( _msg );
-    print( tbData );
-    print( Json.Encode( tbData ) );
+    local login_decode1 = pb.decode( 'msg.LoginRequest', _msg )
+    print( login_decode1.id, login_decode1.name, login_decode1.email, login_decode1.sid )
 end
+
+--测试新lua_proto
+--[[local pb = require 'pb'
+assert( pb.load( CS.Game.LuaHelper.LoadPb('loginForLua') ) );
+local login = {}
+login.id = 1000;
+login.name = "zyp";
+login.email = "1@qq.com";
+
+--序列化
+local encode = pb.encode('msg.LoginRequest', login)
+print( encode );
+-- 反序列化
+local login_decode = pb.decode('msg.LoginRequest', encode)
+
+print( login_decode.id, login_decode.name, login_decode.email )
+
+function TestPb( _msg )
+    print( _msg );
+    local login_decode1 = pb.decode( 'msg.LoginRequest', _msg )
+    print( login_decode1.id, login_decode1.name, login_decode1.email )
+end]]
+
+
 

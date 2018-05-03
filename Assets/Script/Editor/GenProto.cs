@@ -61,6 +61,38 @@ public class GenProto
         AssetDatabase.Refresh();
     }
 
+    [MenuItem( "Tools/构建proto.pb二进制" )]
+    public static void BuildProtobufPbByteFile()
+    {
+        string dir = Application.dataPath.Replace( "Assets", "Tools/Proto/LuaProto" );
+        paths.Clear(); files.Clear(); Recursive( dir );
+
+        string outDir = Application.dataPath + "/LuaScript/Pb/";
+
+        //"D:/protoc-3.5.1-win32/protoc.exe";
+        string protoc = Application.dataPath.Replace( "Assets", "Tools/protoc.exe" );
+
+        foreach( string f in files )
+        {
+            string name = Path.GetFileName( f );
+            string ext = Path.GetExtension( f );
+            if( !ext.Equals( ".proto" ) ) continue;
+
+            ProcessStartInfo info = new ProcessStartInfo();
+            info.FileName = protoc;
+            info.Arguments = "--descriptor_set_out=" + outDir + name.Replace( ".proto", ".pb.bytes" ) + " " + name;
+            info.WindowStyle = ProcessWindowStyle.Normal;
+            info.UseShellExecute = true;
+            info.WorkingDirectory = dir;
+            info.ErrorDialog = true;
+            UnityEngine.Debug.Log( info.FileName + " " + info.Arguments );
+
+            Process pro = Process.Start( info );
+            pro.WaitForExit();
+        }
+        AssetDatabase.Refresh();
+    }
+
     [MenuItem( "Tools/构建proto.pb" )]
     public static void BuildProtobufPbFile()
     {
@@ -80,7 +112,7 @@ public class GenProto
 
             ProcessStartInfo info = new ProcessStartInfo();
             info.FileName = protoc;
-            info.Arguments = "--descriptor_set_out=" + outDir + name.Replace( ".proto", ".pb.bytes" ) + " " + name;
+            info.Arguments = "-o" + outDir + name.Replace( ".proto", ".pb" ) + " " + name;
             info.WindowStyle = ProcessWindowStyle.Normal;
             info.UseShellExecute = true;
             info.WorkingDirectory = dir;

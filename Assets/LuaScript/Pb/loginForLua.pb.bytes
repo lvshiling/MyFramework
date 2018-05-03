@@ -1,11 +1,11 @@
 
-¤
-loginForLua.proto"Z
+±
+loginForLua.protomsg"Z
 LoginRequest
-id (Rid
-name (	Rname
-email (	Remail
-sid (Rsid"3
+id (Rid
+name (	Rname
+email (	Remail
+sid (Rsid"3
 LoginResponse
-id (Rid
-name (	Rname
+id (Rid
+name (	Rnamebproto3

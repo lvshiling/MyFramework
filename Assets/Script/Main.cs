@@ -57,18 +57,19 @@ namespace GameFramework
                         ////测试UI
                         //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
                         //测试pbc
-                        //Msg.LoginRequest msg = new Msg.LoginRequest();
-                        //msg.Id = 111;
-                        //msg.Name = "zyp";
-                        //msg.Email = "651115152";
-                        //msg.Sid = 1000;
-                        //byte[] result;
-                        //using( MemoryStream ms = new MemoryStream() )
-                        //{
-                        //    msg.WriteTo( ms );
-                        //    result = ms.ToArray();
-                        //}
-                        //LuaManager.Instance.Call( "TestPbc", Encoding.UTF8.GetString( result, 0, result.Length ) );
+                        Msg.LoginRequest msg = new Msg.LoginRequest();
+                        msg.Id = 1000;
+                        msg.Name = "zyp";
+                        msg.Email = "1@qq.com";
+                        msg.Sid = 8888;
+                        byte[] result;
+                        using( MemoryStream ms = new MemoryStream() )
+                        {
+                            msg.WriteTo( ms );
+                            result = ms.ToArray();
+                        }
+                        LuaManager.Instance.Call( "TestPbc", result );
+                        //LuaManager.Instance.Call( "TestPb", result );
                     } );
                 } );
                 UIFrameWork.UIManager.Instance.Initialize();
