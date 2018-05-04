@@ -1,6 +1,6 @@
 configs.assetbundle	978	0	eb716d04e816d104700b4cba830ae538		Assets/Res/Config/global_config.txt,Assets/Res/Config/global_config1.txt,
-luas.assetbundle	3857	0	b99a2d6af5d2a5c54edcda7af1e7577c		Assets/LuaScript/Init.lua.txt,Assets/LuaScript/protobuf.lua.txt,Assets/LuaScript/UI/ui_test_lua.lua.txt,
-pbs.assetbundle	868	0	c9460bf33ff73911bdea94226480299c		Assets/LuaScript/Pb/login.pb.bytes,
+luas.assetbundle	3931	0	435b00f571281814bde0699d9c4fc6e6		Assets/LuaScript/Init.lua.txt,Assets/LuaScript/protobuf.lua.txt,Assets/LuaScript/UI/ui_test_lua.lua.txt,
+pbs.assetbundle	894	0	83be26a2af54d83fc3d3117dd47d4be5		Assets/LuaScript/Pb/loginForLua.pb.bytes,
 res/testshader/cube.assetbundle	1890	0	f413da0c50a41a59930a6025f7e83648	res/testshader/newmaterial.assetbundle,res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/Cube.prefab,
 res/testshader/cube1.assetbundle	1898	0	b215af83809d0bc99e7e2750f4084b05	res/testshader/newmaterial.assetbundle,res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/Cube1.prefab,
 res/testshader/newmaterial.assetbundle	1539	0	765668c19bedd3521f182b89528cd3e6	res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/NewMaterial.mat,

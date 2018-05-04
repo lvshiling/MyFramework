@@ -49,7 +49,7 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                ResManager.Instance.LoadBundle( "pb.assetbundle", ( _data, _obj ) =>
+                ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
                 {
                     ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
                     {
@@ -70,6 +70,7 @@ namespace GameFramework
                         }
                         LuaManager.Instance.Call( "TestPbc", result );
                         //LuaManager.Instance.Call( "TestPb", result );
+                        Debug.Log( Network.player.ipAddress );
                     } );
                 } );
                 UIFrameWork.UIManager.Instance.Initialize();
