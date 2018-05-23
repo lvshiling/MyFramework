@@ -6,7 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UIFrameWork
+namespace UIFramework
 {
     public enum UILayer
     {

@@ -9,6 +9,7 @@ using Net;
 using System.Text;
 using System.IO;
 using Google.Protobuf;
+using System.Collections;
 
 namespace GameFramework
 {
@@ -49,31 +50,32 @@ namespace GameFramework
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
-                ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
-                {
-                    ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
-                    {
-                        LuaManager.Instance.Init();
-                        ////测试UI
-                        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
-                        //测试pbc
-                        Msg.LoginRequest msg = new Msg.LoginRequest();
-                        msg.Id = 1000;
-                        msg.Name = "zyp";
-                        msg.Email = "1@qq.com";
-                        msg.Sid = 8888;
-                        byte[] result;
-                        using( MemoryStream ms = new MemoryStream() )
-                        {
-                            msg.WriteTo( ms );
-                            result = ms.ToArray();
-                        }
-                        LuaManager.Instance.Call( "TestPbc", result );
-                        //LuaManager.Instance.Call( "TestPb", result );
-                        Debug.Log( Network.player.ipAddress );
-                    } );
-                } );
-                UIFrameWork.UIManager.Instance.Initialize();
+                //测试lua_proto
+                //ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
+                //{
+                //    ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
+                //    {
+                //        LuaManager.Instance.Init();
+                //        ////测试UI
+                //        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                //        //测试pbc
+                //        Msg.LoginRequest msg = new Msg.LoginRequest();
+                //        msg.Id = 1000;
+                //        msg.Name = "zyp";
+                //        msg.Email = "1@qq.com";
+                //        msg.Sid = 8888;
+                //        byte[] result;
+                //        using( MemoryStream ms = new MemoryStream() )
+                //        {
+                //            msg.WriteTo( ms );
+                //            result = ms.ToArray();
+                //        }
+                //        LuaManager.Instance.Call( "TestPbc", result );
+                //        //LuaManager.Instance.Call( "TestPb", result );
+                //        Debug.Log( Network.player.ipAddress );
+                //    } );
+                //} );
+                UIFramework.UIManager.Instance.Initialize();
                 ////测试shader
                 //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
                 ////测试自定义csv
@@ -97,6 +99,8 @@ namespace GameFramework
                 //    if( _data != null )
                 //        SceneManager.LoadScene( "test" );
                 //} );
+                //测试音乐
+                StartCoroutine( testMusic() );
             };
             if( m_check_update )
             {
@@ -145,6 +149,13 @@ namespace GameFramework
             NetManager.Instance.OnClose();
             if( EventAppQuit != null )
                 EventAppQuit();
+        }
+        
+        IEnumerator testMusic()
+        {
+            SoundFramework.SoundManager.PlayMusic( "test_music.ogg" );
+            yield return new WaitForSeconds( 5 );
+            SoundFramework.SoundManager.PlayMusic( "test_music1.ogg" );
         }
 
         class TestCsv

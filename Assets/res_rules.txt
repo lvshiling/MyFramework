@@ -39,3 +39,10 @@ searchPath=Assets/Scene/test
 searchPattern=*.unity
 searchOption=AllDirectories
 bundleName=
+
+//test music
+[BuildAssetsWithFilename]
+searchPath=Assets/Res/Audio/Dynamic/Music
+searchPattern=*.ogg
+searchOption=AllDirectories
+bundleName=

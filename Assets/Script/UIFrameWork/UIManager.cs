@@ -8,7 +8,7 @@ using Scene = UnityEngine.SceneManagement.Scene;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 using GameFramework;
 
-namespace UIFrameWork
+namespace UIFramework
 {
     public class UIManager : MonoBehaviour
     {

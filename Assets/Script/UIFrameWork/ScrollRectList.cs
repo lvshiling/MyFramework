@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UIFrameWork
+namespace UIFramework
 {
     public class ScrollRectListItem
     {

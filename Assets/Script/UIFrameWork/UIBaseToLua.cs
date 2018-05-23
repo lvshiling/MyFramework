@@ -1,6 +1,6 @@
 ﻿using XLua;
 
-namespace UIFrameWork
+namespace UIFramework
 {
     /// <summary>
     /// 全脚本逻辑UI用这个
