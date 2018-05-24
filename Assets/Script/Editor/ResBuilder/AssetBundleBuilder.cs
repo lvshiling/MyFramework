@@ -12,7 +12,7 @@ namespace ResFramework
         public static string Path = "Assets/StreamingAssets";
         public static string ResListPath = "Assets/res_list.txt";
 
-        public static BuildAssetBundleOptions Options = BuildAssetBundleOptions.None;
+        public static BuildAssetBundleOptions Options = BuildAssetBundleOptions.None | BuildAssetBundleOptions.DisableWriteTypeTree;
 
 #if UNITY_STANDALONE
     public static BuildTarget TargetPlatform = BuildTarget.StandaloneWindows;
@@ -113,13 +113,15 @@ namespace ResFramework
         [MenuItem( "打包/打包所有" )]
         public static void Build()
         {
+            long begin = System.DateTime.Now.Ticks;
             ClearAllAssetBundleName();
             List<AssetBundleBuild> builds = BuildRule.GetBuilds();
             if( builds == null || builds.Count == 0 )
                 return;
             BuildPipeline.BuildAssetBundles( Path, builds.ToArray(), Options, TargetPlatform );
             BuildResList( null );
-            Debug.Log( "打包所有完成" );
+            TimeSpan elapsedSpan = new TimeSpan( System.DateTime.Now.Ticks - begin );
+            Debug.LogFormat( "打包所有完成 用时{0}秒", elapsedSpan.TotalSeconds );
         }
 
         //打包单个只是为了方便修改某个资源后不用打全包就能马上在手机上测试 但是没有收集依赖 

@@ -42,7 +42,7 @@ bundleName=
 
 //test music
 [BuildAssetsWithFilename]
-searchPath=Assets/Res/Audio/Dynamic/Music
+searchPath=Assets/Res/Audio/Dynamic
 searchPattern=*.ogg
 searchOption=AllDirectories
 bundleName=

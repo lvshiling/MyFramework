@@ -182,7 +182,7 @@ namespace ResFramework
                 return;
             if( !m_res_bundle_path.ContainsKey( _asset_path ) )
             {
-                Debug.LogErrorFormat( "加载Asset失败， {0}没有对应的Bundle！" );
+                Debug.LogErrorFormat( "加载Asset失败， {0}没有对应的Bundle！", _asset_path );
                 return;
             }
             _loadAssetBundleAndAsset( m_res_bundle_path[_asset_path], _asset_path, _action, async );

@@ -3,6 +3,7 @@ luas.assetbundle	3931	0	435b00f571281814bde0699d9c4fc6e6		Assets/LuaScript/Init.
 pbs.assetbundle	894	0	83be26a2af54d83fc3d3117dd47d4be5		Assets/LuaScript/Pb/loginForLua.pb.bytes,
 res/audio/dynamic/music/test_music.assetbundle	1026483	0	d082cefcaefd86fb9b3067975750fd62		Assets/Res/Audio/Dynamic/Music/test_music.ogg,
 res/audio/dynamic/music/test_music1.assetbundle	1346129	0	6009a6eeee37c70496fdac7e32fc3868		Assets/Res/Audio/Dynamic/Music/test_music1.ogg,
+res/audio/dynamic/sound/test_sound.assetbundle	21985	0	a230b7e676d4bd99e171f62cab254fde		Assets/Res/Audio/Dynamic/Sound/test_sound.ogg,
 res/testshader/cube.assetbundle	1890	0	f413da0c50a41a59930a6025f7e83648	res/testshader/newmaterial.assetbundle,res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/Cube.prefab,
 res/testshader/cube1.assetbundle	1898	0	b215af83809d0bc99e7e2750f4084b05	res/testshader/newmaterial.assetbundle,res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/Cube1.prefab,
 res/testshader/newmaterial.assetbundle	1539	0	765668c19bedd3521f182b89528cd3e6	res/ui/texture/bg_loading05.assetbundle,shaders.assetbundle,	Assets/Res/TestShader/NewMaterial.mat,

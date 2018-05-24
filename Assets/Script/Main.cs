@@ -155,7 +155,9 @@ namespace GameFramework
         {
             SoundFramework.SoundManager.PlayMusic( "test_music.ogg" );
             yield return new WaitForSeconds( 5 );
-            SoundFramework.SoundManager.PlayMusic( "test_music1.ogg" );
+            SoundFramework.SoundManager.PlayMusic( "test_music1.ogg", 1f, false, false, 3f );
+            yield return new WaitForSeconds( 2 );
+            SoundFramework.SoundManager.PlaySound( "test_sound.ogg" );
         }
 
         class TestCsv
