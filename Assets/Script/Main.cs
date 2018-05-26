@@ -100,7 +100,9 @@ namespace GameFramework
                 //        SceneManager.LoadScene( "test" );
                 //} );
                 //测试音乐
-                StartCoroutine( testMusic() );
+                //StartCoroutine( _testMusic() );
+                //测试pool
+                StartCoroutine( _testPool() );
             };
             if( m_check_update )
             {
@@ -151,13 +153,27 @@ namespace GameFramework
                 EventAppQuit();
         }
         
-        IEnumerator testMusic()
+        IEnumerator _testMusic()
         {
             SoundFramework.SoundManager.PlayMusic( "test_music.ogg" );
             yield return new WaitForSeconds( 5 );
             SoundFramework.SoundManager.PlayMusic( "test_music1.ogg", 1f, false, false, 3f );
             yield return new WaitForSeconds( 2 );
             SoundFramework.SoundManager.PlaySound( "test_sound.ogg" );
+        }
+
+        IEnumerator _testPool()
+        {
+            TrashManRecycleBin data = new TrashManRecycleBin();
+            GameObject prefab = new GameObject();
+            data.prefab = prefab;
+            TrashMan.manageRecycleBin( data );
+            for( int i = 0; i < 66; ++i )
+            {
+                var newObj = TrashMan.spawn( prefab );
+                TrashMan.despawnAfterDelay( newObj, 2f );
+                yield return new WaitForSeconds( 3f );
+            }
         }
 
         class TestCsv
