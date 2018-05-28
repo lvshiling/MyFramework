@@ -45,36 +45,36 @@ namespace GameFramework
         void Start()
         {
             m_game_machine.Start();
-
+            //LunarConsolePlugin.LunarConsole.Show();
             //下面是测试 正常应该放在游戏状态机里管理
             ResManager.Instance.Init( m_res_load_mode );
             Action action = () =>
             {
                 //测试lua_proto
-                //ResManager.Instance.LoadBundle( "pbs.assetbundle", ( _data, _obj ) =>
-                //{
-                //    ResManager.Instance.LoadBundle( "luas.assetbundle", ( __data, __obj ) =>
-                //    {
-                //        LuaManager.Instance.Init();
-                //        ////测试UI
-                //        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
-                //        //测试pbc
-                //        Msg.LoginRequest msg = new Msg.LoginRequest();
-                //        msg.Id = 1000;
-                //        msg.Name = "zyp";
-                //        msg.Email = "1@qq.com";
-                //        msg.Sid = 8888;
-                //        byte[] result;
-                //        using( MemoryStream ms = new MemoryStream() )
-                //        {
-                //            msg.WriteTo( ms );
-                //            result = ms.ToArray();
-                //        }
-                //        LuaManager.Instance.Call( "TestPbc", result );
-                //        //LuaManager.Instance.Call( "TestPb", result );
-                //        Debug.Log( Network.player.ipAddress );
-                //    } );
-                //} );
+                ResManager.Instance.LoadBundle( "pbs.assetbundle", (_data, _obj) =>
+                {
+                    ResManager.Instance.LoadBundle( "luas.assetbundle", (__data, __obj) =>
+                    {
+                        LuaManager.Instance.Init();
+                        ////测试UI
+                        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                        //测试pbc
+                        Msg.LoginRequest msg = new Msg.LoginRequest();
+                        msg.Id = 1000;
+                        msg.Name = "zyp";
+                        msg.Email = "1@qq.com";
+                        msg.Sid = 8888;
+                        byte[] result;
+                        using( MemoryStream ms = new MemoryStream() )
+                        {
+                            msg.WriteTo( ms );
+                            result = ms.ToArray();
+                        }
+                        LuaManager.Instance.Call( "TestPbc", result );
+                        //LuaManager.Instance.Call( "TestPb", result );
+                        Debug.Log( Network.player.ipAddress );
+                    } );
+                } );
                 UIFramework.UIManager.Instance.Initialize();
                 ////测试shader
                 //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
@@ -100,9 +100,9 @@ namespace GameFramework
                 //        SceneManager.LoadScene( "test" );
                 //} );
                 //测试音乐
-                //StartCoroutine( _testMusic() );
+                StartCoroutine( _testMusic() );
                 //测试pool
-                StartCoroutine( _testPool() );
+                //StartCoroutine( _testPool() );
             };
             if( m_check_update )
             {

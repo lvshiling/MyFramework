@@ -130,16 +130,19 @@ namespace ResFramework
                 }
                 if( assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
                 {
-                    List<string> list = null;
-                    if( !bundles.TryGetValue( "shaders.assetbundle", out list ) )
+                    if( item.Value.Count > 1 )
                     {
-                        list = new List<string>();
-                        bundles.Add( "shaders.assetbundle", list );
-                    }
-                    if( !list.Contains( assetPath ) )
-                    {
-                        list.Add( assetPath );
-                        packedAssets.Add( assetPath );
+                        List<string> list = null;
+                        if( !bundles.TryGetValue( "shaders.assetbundle", out list ) )
+                        {
+                            list = new List<string>();
+                            bundles.Add( "shaders.assetbundle", list );
+                        }
+                        if( !list.Contains( assetPath ) )
+                        {
+                            list.Add( assetPath );
+                            packedAssets.Add( assetPath );
+                        }
                     }
                 }
                 else
