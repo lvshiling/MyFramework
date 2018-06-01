@@ -77,7 +77,16 @@ namespace GameFramework
                 } );
                 UIFramework.UIManager.Instance.Initialize();
                 ////测试shader
-                //ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (_data, _obj) => { Instantiate( _obj ); _data.Unload(); } );
+                ResManager.Instance.LoadBundle( "shaders.assetbundle", ( _data, _obj ) =>
+                {
+                    if( _data != null )
+                    {
+                        _data.GetBundle().LoadAllAssets();
+                        _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
+                        Debug.Log( "所有shader预热完成" );
+                    }
+                    ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", ( __data, __obj ) => { Instantiate( __obj ); if( __data != null ) __data.Unload(); } );
+                } );
                 ////测试自定义csv
                 //CsvConfig.LoadCsvConfig( "global_config", (_data) =>
                 //{

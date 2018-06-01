@@ -26,6 +26,13 @@ searchPattern=*.shader
 searchOption=AllDirectories
 bundleName=shaders.assetbundle
 
+//打包Shader变量器
+[BuildAssetsWithAssetBundleName]
+searchPath=Assets/Res/Shader
+searchPattern=*.shadervariants
+searchOption=AllDirectories
+bundleName=shaders.assetbundle
+
 //打包UI
 [BuildAssetsWithFilename]
 searchPath=Assets/Res/UI/Prefab

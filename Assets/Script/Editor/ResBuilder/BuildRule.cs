@@ -27,12 +27,15 @@ namespace ResFramework
 
         public static string[] GetAssetPathByBundle( string name )
         {
+            List<string> assets = new List<string>();
             for( int i = 0; i < builds.Count; ++i )
             {
                 if( builds[i].assetBundleName.Equals( name ) )
-                    return builds[i].assetNames;
+                {
+                    assets.AddRange( builds[i].assetNames );
+                }
             }
-            return null;
+            return assets.ToArray();
         }
 
         public static List<AssetBundleBuild> GetBuilds()
@@ -105,7 +108,7 @@ namespace ResFramework
             }
         }
 
-        static List<string> GetFilesWithoutDirectories(string prefabPath, string searchPattern, SearchOption searchOption)
+        static List<string> GetFilesWithoutDirectories( string prefabPath, string searchPattern, SearchOption searchOption )
         {
             var files = Directory.GetFiles( prefabPath, searchPattern, searchOption );
             List<string> items = new List<string>();
