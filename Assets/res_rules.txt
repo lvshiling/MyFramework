@@ -19,12 +19,26 @@ searchPattern=*.txt
 searchOption=AllDirectories
 bundleName=configs.assetbundle
 
+//打包Shader
+[BuildAssetsWithAssetBundleName]
+searchPath=Assets/Res/Shader
+searchPattern=*.shader
+searchOption=AllDirectories
+bundleName=shaders.assetbundle
+
 //打包UI
 [BuildAssetsWithFilename]
 searchPath=Assets/Res/UI/Prefab
 searchPattern=*.prefab
 searchOption=AllDirectories
 bundleName=
+
+//打包UI TEXTURE
+[BuildAssetsWithAssetBundleName]
+searchPath=Assets/Res/UI/Texture
+searchPattern=*.png
+searchOption=AllDirectories
+bundleName=tex.assetbundle
 
 //test shader
 [BuildAssetsWithFilename]

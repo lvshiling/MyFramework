@@ -8,9 +8,11 @@ namespace ResFramework
 {
     public abstract class BuildRule
     {
+        //所有被打包的资源 包括包里所有的资源名字
         protected static List<string> packedAssets = new List<string>();
         protected static List<AssetBundleBuild> builds = new List<AssetBundleBuild>();
         static List<BuildRule> rules = new List<BuildRule>();
+        //key被依赖的资源名 value引用这个依赖的资源名
         static Dictionary<string, List<string>> allDependencies = new Dictionary<string, List<string>>();
 
         public string searchPath;
@@ -56,12 +58,12 @@ namespace ResFramework
                 CollectDependencies( GetFilesWithoutDirectories( item.searchPath, item.searchPattern, item.searchOption ) );
             }
 
-            BuildDependenciesAssets();
-
             foreach( var item in rules )
             {
                 item.Build();
             }
+
+            BuildDependenciesAssets();
 
             EditorUtility.ClearProgressBar();
 
@@ -128,40 +130,19 @@ namespace ResFramework
                 {
                     continue;
                 }
-                if( assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
+                if( item.Value.Count > 1 )
                 {
-                    if( item.Value.Count > 1 )
+                    var name = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( assetPath ).Replace( "assets/", string.Empty ) );
+                    List<string> list = null;
+                    if( !bundles.TryGetValue( name, out list ) )
                     {
-                        List<string> list = null;
-                        if( !bundles.TryGetValue( "shaders.assetbundle", out list ) )
-                        {
-                            list = new List<string>();
-                            bundles.Add( "shaders.assetbundle", list );
-                        }
-                        if( !list.Contains( assetPath ) )
-                        {
-                            list.Add( assetPath );
-                            packedAssets.Add( assetPath );
-                        }
+                        list = new List<string>();
+                        bundles.Add( name, list );
                     }
-                }
-                else
-                {
-                    if( item.Value.Count > 1 )
+                    if( !list.Contains( assetPath ) )
                     {
-                        //var name = "shared/" + BuildAssetBundleNameWithAssetPath( Path.GetDirectoryName( assetPath ) );
-                        var name = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( assetPath ).Replace( "assets/", string.Empty ) );
-                        List<string> list = null;
-                        if( !bundles.TryGetValue( name, out list ) )
-                        {
-                            list = new List<string>();
-                            bundles.Add( name, list );
-                        }
-                        if( !list.Contains( assetPath ) )
-                        {
-                            list.Add( assetPath );
-                            packedAssets.Add( assetPath );
-                        }
+                        list.Add( assetPath );
+                        packedAssets.Add( assetPath );
                     }
                 }
             }
@@ -180,7 +161,7 @@ namespace ResFramework
             List<string> assetNames = new List<string>();
             foreach( var assetPath in assets )
             {
-                if( assetPath.Contains( ".prefab" ) || assetPath.Equals( item ) || packedAssets.Contains( assetPath ) || assetPath.EndsWith( ".cs", StringComparison.CurrentCulture ) || assetPath.EndsWith( ".shader", StringComparison.CurrentCulture ) )
+                if( assetPath.Equals( item ) || packedAssets.Contains( assetPath ) || assetPath.EndsWith( ".cs", StringComparison.CurrentCulture ) )
                 {
                     continue;
                 }
@@ -223,13 +204,6 @@ namespace ResFramework
         protected static List<string> GetFilesWithoutPacked( string searchPath, string searchPattern, SearchOption searchOption )
         {
             var files = GetFilesWithoutDirectories( searchPath, searchPattern, searchOption );
-            var filesCount = files.Count;
-            var removeAll = files.RemoveAll( ( string obj ) =>
-            {
-                return packedAssets.Contains( obj );
-            } );
-            Debug.Log( string.Format( "RemoveAll {0} size: {1}", removeAll, filesCount ) );
-
             return files;
         }
 
@@ -275,12 +249,6 @@ namespace ResFramework
         public override void Build()
         {
             var files = GetFilesWithoutPacked( searchPath, searchPattern, searchOption );
-            List<string> list = new List<string>();
-            foreach( var item in files )
-            {
-                list.AddRange( GetDependenciesWithoutShared( item ) );
-            }
-            files.AddRange( list );
             AssetBundleBuild build = new AssetBundleBuild();
             build.assetBundleName = bundleName;
             build.assetNames = files.ToArray();
@@ -323,7 +291,6 @@ namespace ResFramework
                     bundles[path] = new List<string>();
                 }
                 bundles[path].Add( item );
-                bundles[path].AddRange( GetDependenciesWithoutShared( item ) );
             }
 
             int count = 0;
@@ -372,10 +339,8 @@ namespace ResFramework
                 }
                 AssetBundleBuild build = new AssetBundleBuild();
                 build.assetBundleName = string.Format( "{0}.assetbundle", BuildAssetBundleNameWithAssetPath( item ).Replace( "assets/", string.Empty ) );
-                var assetNames = GetDependenciesWithoutShared( item );
-                assetNames.Add( item );
-                build.assetNames = assetNames.ToArray();
-                packedAssets.AddRange( assetNames );
+                build.assetNames = new[] { item };
+                packedAssets.AddRange( build.assetNames );
                 builds.Add( build );
             }
         }

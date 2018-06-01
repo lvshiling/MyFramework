@@ -100,7 +100,7 @@ namespace GameFramework
                 //        SceneManager.LoadScene( "test" );
                 //} );
                 //测试音乐
-                StartCoroutine( _testMusic() );
+                //StartCoroutine( _testMusic() );
                 //测试pool
                 //StartCoroutine( _testPool() );
             };
