@@ -128,7 +128,7 @@ namespace ResFramework
         [MenuItem( "打包/打包选中" )]
         public static void BuildSelected()
         {
-            UnityEngine.Object[] objs = Selection.GetFiltered<UnityEngine.Object>( SelectionMode.Assets );
+            UnityEngine.Object[] objs = Selection.GetFiltered<UnityEngine.Object>( SelectionMode.DeepAssets );
             if( objs == null || objs.Length == 0 )
             {
                 EditorUtility.DisplayDialog( "提示", "请选中要打包的资源", "确定" );
