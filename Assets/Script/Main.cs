@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using ResFramework;
 using System;
 using Utility;
@@ -10,11 +11,14 @@ using System.Text;
 using System.IO;
 using Google.Protobuf;
 using System.Collections;
+using UIFramework;
 
 namespace GameFramework
 {
     public class Main : MonoBehaviour
     {
+        public static Main Instance;
+
         public static event Action<float> EventUpdate;
 
         public static event Action EventLateUpdate;
@@ -30,13 +34,19 @@ namespace GameFramework
         [SerializeField]
         private eResLoadMode m_res_load_mode = eResLoadMode.Editor;
 
+        public eResLoadMode ResLoadMode { get { return m_res_load_mode; } }
+
         [SerializeField]
         private bool m_check_update = false;
+
+        public Image TestImage = null;
+        public Image TestImage1 = null;
 
         private GameStateMachine m_game_machine;
 
         void Awake()
         {
+            Instance = this;
             m_game_machine = new GameStateMachine();
             m_game_machine.Initialize();
             DontDestroyOnLoad( this );
@@ -51,42 +61,42 @@ namespace GameFramework
             Action action = () =>
             {
                 //测试lua_proto
-                ResManager.Instance.LoadBundle( "pbs.assetbundle", (_data, _obj) =>
-                {
-                    ResManager.Instance.LoadBundle( "luas.assetbundle", (__data, __obj) =>
-                    {
-                        LuaManager.Instance.Init();
-                        ////测试UI
-                        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
-                        //测试pbc
-                        Msg.LoginRequest msg = new Msg.LoginRequest();
-                        msg.Id = 1000;
-                        msg.Name = "zyp";
-                        msg.Email = "1@qq.com";
-                        msg.Sid = 8888;
-                        byte[] result;
-                        using( MemoryStream ms = new MemoryStream() )
-                        {
-                            msg.WriteTo( ms );
-                            result = ms.ToArray();
-                        }
-                        LuaManager.Instance.Call( "TestPbc", result );
-                        //LuaManager.Instance.Call( "TestPb", result );
-                        Debug.Log( Network.player.ipAddress );
-                    } );
-                } );
-                UIFramework.UIManager.Instance.Initialize();
-                ////测试shader
-                ResManager.Instance.LoadBundle( "shaders.assetbundle", ( _data, _obj ) =>
-                {
-                    if( _data != null )
-                    {
-                        _data.GetBundle().LoadAllAssets();
-                        _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
-                        Debug.Log( "所有shader预热完成" );
-                    }
-                    ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", ( __data, __obj ) => { Instantiate( __obj ); if( __data != null ) __data.Unload(); } );
-                } );
+                //ResManager.Instance.LoadBundle( "pbs.assetbundle", (_data, _obj) =>
+                //{
+                //    ResManager.Instance.LoadBundle( "luas.assetbundle", (__data, __obj) =>
+                //    {
+                //        LuaManager.Instance.Init();
+                //        ////测试UI
+                //        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
+                //        //测试pbc
+                //        Msg.LoginRequest msg = new Msg.LoginRequest();
+                //        msg.Id = 1000;
+                //        msg.Name = "zyp";
+                //        msg.Email = "1@qq.com";
+                //        msg.Sid = 8888;
+                //        byte[] result;
+                //        using( MemoryStream ms = new MemoryStream() )
+                //        {
+                //            msg.WriteTo( ms );
+                //            result = ms.ToArray();
+                //        }
+                //        LuaManager.Instance.Call( "TestPbc", result );
+                //        //LuaManager.Instance.Call( "TestPb", result );
+                //        Debug.Log( Network.player.ipAddress );
+                //    } );
+                //} );
+                //UIFramework.UIManager.Instance.Initialize();
+                //////测试shader
+                //ResManager.Instance.LoadBundle( "shaders.assetbundle", (_data, _obj) =>
+                //{
+                //    if( _data != null )
+                //    {
+                //        _data.GetBundle().LoadAllAssets();
+                //        _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
+                //        Debug.Log( "所有shader预热完成" );
+                //    }
+                //    ResManager.Instance.LoadAsset( "Assets/Res/TestShader/Cube.prefab", (__data, __obj) => { Instantiate( __obj ); if( __data != null ) __data.Unload(); } );
+                //} );
                 ////测试自定义csv
                 //CsvConfig.LoadCsvConfig( "global_config", (_data) =>
                 //{
@@ -112,6 +122,20 @@ namespace GameFramework
                 //StartCoroutine( _testMusic() );
                 //测试pool
                 //StartCoroutine( _testPool() );
+                //测试UIEffect
+                ResManager.Instance.LoadBundle( "shaders.assetbundle", (_data, _obj) =>
+                {
+                    if( _data != null )
+                    {
+                        ShaderManager.Instance.AddShaders( _data.GetBundle().LoadAllAssets<Shader>() );
+                         _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
+                        _data.Unload();
+                        Debug.Log( "所有shader预热完成" );
+                    }
+                    TestImage.SetGrayEffect( true );
+                    TestImage1.SetGrayEffect( true );
+                    //TestImage1.SetGrayEffect( false );
+                } );
             };
             if( m_check_update )
             {
@@ -161,7 +185,7 @@ namespace GameFramework
             if( EventAppQuit != null )
                 EventAppQuit();
         }
-        
+
         IEnumerator _testMusic()
         {
             SoundFramework.SoundManager.PlayMusic( "test_music.ogg" );

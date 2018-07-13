@@ -10,3 +10,14 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: b083448f87f06f844bf0b510961eeeed, type: 3}
     second:
       variants: []
+  - first: {fileID: 4800000, guid: 84c2ef35c618ba441932737f3454afe4, type: 3}
+    second:
+      variants:
+      - keywords: GRAY_EFFECT
+        passType: 0
+      - keywords: GRAY_EFFECT UNITY_UI_CLIP_RECT
+        passType: 0
+      - keywords: GRAY_EFFECT UNITY_UI_ALPHACLIP
+        passType: 0
+      - keywords: GRAY_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
+        passType: 0
