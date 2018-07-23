@@ -10,5 +10,5 @@ res/testshader/newmaterial.assetbundle	687	0	dd66bab2fc5de5336a42b53125427a79	sh
 res/ui/prefab/ui_test_c.assetbundle	858	0	f4a18f2190f21e75ec118b716487f3c6	tex.assetbundle,	Assets/Res/UI/Prefab/ui_test_c.prefab,
 res/ui/prefab/ui_test_lua.assetbundle	859	0	4dc8f4ad4ec3e98dd24e4ee6fb372e4e	tex.assetbundle,	Assets/Res/UI/Prefab/ui_test_lua.prefab,
 scene/test/test.assetbundle	30295	0	0fec3d9ad419f67fe9ee2f9780553c7e	res/testshader/cube.assetbundle,res/testshader/cube1.assetbundle,res/testshader/newmaterial.assetbundle,shaders.assetbundle,tex.assetbundle,	Assets/Scene/test/test.unity,
-shaders.assetbundle	3964	0	0eae4c162d7920b6a172eb59c8fc8bcb		Assets/Res/Shader/UIEffect.shader,Assets/Res/Shader/Unlit-Normal1.shader,Assets/Res/Shader/ShaderVariants.shadervariants,
+shaders.assetbundle	5739	0	4b64239a00526d1ad12f8890036cad23		Assets/Res/Shader/UIEffect.shader,Assets/Res/Shader/Unlit-Normal1.shader,Assets/Res/Shader/ShaderVariants.shadervariants,
 tex.assetbundle	3430368	0	d0cab9f1f2cd20f820958f902992bd42		Assets/Res/UI/Texture/bg_loading05.png,Assets/Res/UI/Texture/UIEffect_Demo_Unity-chan.png,

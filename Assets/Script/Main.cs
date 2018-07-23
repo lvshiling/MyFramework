@@ -133,8 +133,9 @@ namespace GameFramework
                         Debug.Log( "所有shader预热完成" );
                     }
                     TestImage.SetGrayEffect( true );
-                    TestImage1.SetGrayEffect( true );
-                    //TestImage1.SetGrayEffect( false );
+                    TestImage1.SetGrayEffect( true, 0.5f );
+                    TestImage.SetPixelEffect( true );
+                    TestImage1.SetPixelEffect( true, 5 );
                 } );
             };
             if( m_check_update )

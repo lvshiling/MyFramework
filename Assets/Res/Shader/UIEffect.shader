@@ -15,6 +15,9 @@ Shader "UI/UIEffect"
 
         _ColorMask ("Color Mask", Float) = 15
 
+        _GrayPower ("GrayPower", Range( 0, 1 )) = 1
+        _PixelPower ("PixelPower", Int) = 16
+
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
 
@@ -58,7 +61,8 @@ Shader "UI/UIEffect"
 
             #pragma multi_compile __ UNITY_UI_CLIP_RECT
             #pragma multi_compile __ UNITY_UI_ALPHACLIP
-            #pragma shader_feature __ GRAY_EFFECT
+            #pragma shader_feature GRAY_EFFECT
+            #pragma shader_feature PIXEL_EFFECT
 
             struct appdata_t
             {
@@ -96,13 +100,21 @@ Shader "UI/UIEffect"
             }
 
             sampler2D _MainTex;
+            half4 _MainTex_TexelSize;
+            float _GrayPower;
+            int _PixelPower;
 
             fixed4 frag(v2f IN) : SV_Target
             {
+                #ifdef PIXEL_EFFECT
+                float2 uv = IN.texcoord * _MainTex_TexelSize.zw;
+                uv = floor( uv / _PixelPower ) * _PixelPower;
+                IN.texcoord = uv * _MainTex_TexelSize.xy;
+                #endif
                 half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
 
                 #ifdef GRAY_EFFECT
-                color.rgb = Luminance(color.rgb);
+                color.rgb = lerp( color.rgb, Luminance(color.rgb), _GrayPower);
                 #endif
 
                 #ifdef UNITY_UI_CLIP_RECT

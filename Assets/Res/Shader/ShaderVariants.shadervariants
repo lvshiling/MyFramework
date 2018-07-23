@@ -21,3 +21,19 @@ ShaderVariantCollection:
         passType: 0
       - keywords: GRAY_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
         passType: 0
+      - keywords: PIXEL_EFFECT
+        passType: 0
+      - keywords: PIXEL_EFFECT UNITY_UI_CLIP_RECT
+        passType: 0
+      - keywords: PIXEL_EFFECT UNITY_UI_ALPHACLIP
+        passType: 0
+      - keywords: PIXEL_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
+        passType: 0
+      - keywords: GRAY_EFFECT PIXEL_EFFECT
+        passType: 0
+      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_CLIP_RECT
+        passType: 0
+      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_ALPHACLIP
+        passType: 0
+      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
+        passType: 0

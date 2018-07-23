@@ -6,22 +6,47 @@ namespace UIFramework
 {
     public static class UIEffect
     {
-        public static void SetGrayEffect( this Image _image, bool _enabled )
+        public static Material GetMaterial( string _shader, Graphic _graphic )
         {
-            Shader shader = GameFramework.ShaderManager.Instance.GetShader( "UI/UIEffect" );
+            Shader shader = GameFramework.ShaderManager.Instance.GetShader( _shader );
             if( shader == null )
             {
-                Debug.LogError( "没有shader:UI/UIEffect" );
-                return;
+                Debug.LogErrorFormat( "没有shader:{0}", _shader );
+                return null;
             }
-            if( shader != _image.material.shader )
+            if( shader != _graphic.material.shader )
             {
-                _image.material = new Material( shader );
+                _graphic.material = new Material( shader );
             }
+            return _graphic.material;
+        }
+
+        public static void SetGrayEffect( this Graphic _graphic, bool _enabled, float _power = 1.0f )
+        {
+            Material material = GetMaterial( "UI/UIEffect", _graphic );
+            if( material == null )
+                return;
             if( _enabled )
-                _image.material.EnableKeyword( "GRAY_EFFECT" );
+            {
+                material.EnableKeyword( "GRAY_EFFECT" );
+                material.SetFloat( "_GrayPower", _power );
+            }
             else
-                _image.material.DisableKeyword( "GRAY_EFFECT" );
+                material.DisableKeyword( "GRAY_EFFECT" );
+        }
+
+        public static void SetPixelEffect( this Graphic _graphic, bool _enabled, int _power = 12 )
+        {
+            Material material = GetMaterial( "UI/UIEffect", _graphic );
+            if( material == null )
+                return;
+            if( _enabled )
+            {
+                material.EnableKeyword( "PIXEL_EFFECT" );
+                material.SetFloat( "_PixelPower", _power );
+            }
+            else
+                material.DisableKeyword( "PIXEL_EFFECT" );
         }
     }
 }
