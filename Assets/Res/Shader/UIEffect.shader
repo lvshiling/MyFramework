@@ -15,8 +15,8 @@ Shader "UI/UIEffect"
 
         _ColorMask ("Color Mask", Float) = 15
 
-        _GrayPower ("GrayPower", Range( 0, 1 )) = 1
-        _PixelPower ("PixelPower", Int) = 16
+        _TonePower ("GrayPower", Range( 0, 1 )) = 1
+        _PixelPower ("PixelPower", Range( 0, 1 )) = 1
 
         [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
     }
@@ -61,8 +61,8 @@ Shader "UI/UIEffect"
 
             #pragma multi_compile __ UNITY_UI_CLIP_RECT
             #pragma multi_compile __ UNITY_UI_ALPHACLIP
-            #pragma shader_feature GRAY_EFFECT
-            #pragma shader_feature PIXEL_EFFECT
+            #pragma shader_feature __ TONE_GRAY
+            #pragma shader_feature __ EFFECT_BLUR EFFECT_PIXEL
 
             struct appdata_t
             {
@@ -85,6 +85,19 @@ Shader "UI/UIEffect"
             fixed4 _TextureSampleAdd;
             float4 _ClipRect;
 
+            fixed4 Blur(sampler2D tex, half2 uv, half2 addUv, half bias)
+            {
+                return ( tex2D(tex, uv + half2(addUv.x, addUv.y)) + tex2D(tex, uv + half2(-addUv.x, addUv.y))
+                       + tex2D(tex, uv + half2(addUv.x, -addUv.y)) + tex2D(tex, uv + half2(-addUv.x, -addUv.y)) ) * bias;
+            }
+            
+            fixed4 Tex2DBlurring(sampler2D tex, half2 uv, half2 blur)
+            {
+                half4 color = tex2D(tex, uv);
+                return color * 0.41511 + Blur( tex, uv, blur * 3, 0.12924 ) + Blur( tex, uv, blur * 5, 0.01343 ) 
+                + Blur( tex, uv, blur * 6, 0.00353 );
+            }
+
             v2f vert(appdata_t v)
             {
                 v2f OUT;
@@ -101,20 +114,24 @@ Shader "UI/UIEffect"
 
             sampler2D _MainTex;
             half4 _MainTex_TexelSize;
-            float _GrayPower;
-            int _PixelPower;
+            float _TonePower;
+            float _PixelPower;
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                #ifdef PIXEL_EFFECT
-                float2 uv = IN.texcoord * _MainTex_TexelSize.zw;
-                uv = floor( uv / _PixelPower ) * _PixelPower;
-                IN.texcoord = uv * _MainTex_TexelSize.xy;
+                #ifdef EFFECT_BLUR
+                    half4 color = (Tex2DBlurring(_MainTex, IN.texcoord, _PixelPower*2*_MainTex_TexelSize.xy) + _TextureSampleAdd) * IN.color;
+                #elif EFFECT_PIXEL
+                    float2 uv = IN.texcoord * _MainTex_TexelSize.zw;
+                    uv = floor( uv / ( _PixelPower * 20 ) ) * _PixelPower * 20;
+                    IN.texcoord = uv * _MainTex_TexelSize.xy;
+                    half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
+                #else
+                    half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
                 #endif
-                half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
 
-                #ifdef GRAY_EFFECT
-                color.rgb = lerp( color.rgb, Luminance(color.rgb), _GrayPower);
+                #ifdef TONE_GRAY
+                color.rgb = lerp( color.rgb, Luminance(color.rgb), _TonePower);
                 #endif
 
                 #ifdef UNITY_UI_CLIP_RECT

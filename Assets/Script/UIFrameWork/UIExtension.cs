@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace UIFramework
 {
-    public static class UIEffect
+    public static class UIEffectIns
     {
         public static Material GetMaterial( string _shader, Graphic _graphic )
         {
@@ -21,32 +21,48 @@ namespace UIFramework
             return _graphic.material;
         }
 
-        public static void SetGrayEffect( this Graphic _graphic, bool _enabled, float _power = 1.0f )
+        public static void SetGrayEffect( this Graphic _graphic, bool _enabled, float _power = 1f )
         {
             Material material = GetMaterial( "UI/UIEffect", _graphic );
             if( material == null )
                 return;
             if( _enabled )
             {
-                material.EnableKeyword( "GRAY_EFFECT" );
-                material.SetFloat( "_GrayPower", _power );
+                material.EnableKeyword( "TONE_GRAY" );
+                material.SetFloat( "_TonePower", _power );
             }
             else
-                material.DisableKeyword( "GRAY_EFFECT" );
+                material.DisableKeyword( "TONE_GRAY" );
         }
 
-        public static void SetPixelEffect( this Graphic _graphic, bool _enabled, int _power = 12 )
+        public static void SetPixelEffect( this Graphic _graphic, bool _enabled, float _power = 1f )
         {
             Material material = GetMaterial( "UI/UIEffect", _graphic );
             if( material == null )
                 return;
             if( _enabled )
             {
-                material.EnableKeyword( "PIXEL_EFFECT" );
+                material.DisableKeyword( "EFFECT_BLUR" );
+                material.EnableKeyword( "EFFECT_PIXEL" );
                 material.SetFloat( "_PixelPower", _power );
             }
             else
-                material.DisableKeyword( "PIXEL_EFFECT" );
+                material.DisableKeyword( "EFFECT_PIXEL" );
+        }
+
+        public static void SetBlurEffect( this Graphic _graphic, bool _enabled, float _power = 1f )
+        {
+            Material material = GetMaterial( "UI/UIEffect", _graphic );
+            if( material == null )
+                return;
+            if( _enabled )
+            {
+                material.DisableKeyword( "EFFECT_PIXEL" );
+                material.EnableKeyword( "EFFECT_BLUR" );
+                material.SetFloat( "_PixelPower", _power );
+            }
+            else
+                material.DisableKeyword( "EFFECT_BLUR" );
         }
     }
 }

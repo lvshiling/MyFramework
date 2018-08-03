@@ -13,27 +13,13 @@ ShaderVariantCollection:
   - first: {fileID: 4800000, guid: 84c2ef35c618ba441932737f3454afe4, type: 3}
     second:
       variants:
-      - keywords: GRAY_EFFECT
+      - keywords: TONE_GRAY
         passType: 0
-      - keywords: GRAY_EFFECT UNITY_UI_CLIP_RECT
+      - keywords: EFFECT_BLUR
         passType: 0
-      - keywords: GRAY_EFFECT UNITY_UI_ALPHACLIP
+      - keywords: EFFECT_BLUR TONE_GRAY
         passType: 0
-      - keywords: GRAY_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
+      - keywords: EFFECT_PIXEL
         passType: 0
-      - keywords: PIXEL_EFFECT
-        passType: 0
-      - keywords: PIXEL_EFFECT UNITY_UI_CLIP_RECT
-        passType: 0
-      - keywords: PIXEL_EFFECT UNITY_UI_ALPHACLIP
-        passType: 0
-      - keywords: PIXEL_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
-        passType: 0
-      - keywords: GRAY_EFFECT PIXEL_EFFECT
-        passType: 0
-      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_CLIP_RECT
-        passType: 0
-      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_ALPHACLIP
-        passType: 0
-      - keywords: GRAY_EFFECT PIXEL_EFFECT UNITY_UI_ALPHACLIP UNITY_UI_CLIP_RECT
+      - keywords: EFFECT_PIXEL TONE_GRAY
         passType: 0

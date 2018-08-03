@@ -41,6 +41,8 @@ namespace GameFramework
 
         public Image TestImage = null;
         public Image TestImage1 = null;
+        public Text TestText = null;
+        public Text TestText1 = null;
 
         private GameStateMachine m_game_machine;
 
@@ -132,10 +134,24 @@ namespace GameFramework
                         _data.Unload();
                         Debug.Log( "所有shader预热完成" );
                     }
-                    TestImage.SetGrayEffect( true );
-                    TestImage1.SetGrayEffect( true, 0.5f );
-                    TestImage.SetPixelEffect( true );
-                    TestImage1.SetPixelEffect( true, 5 );
+                    //UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( "Assets/Res/UI/Prefab/ui_test_c.prefab" );
+                    //GameObject go = Instantiate( obj ) as GameObject;
+                    //go.SetActive( true );
+                    UIManager.Instance.ShowUI( "ui_test_uieffect" );
+                    //TestImage.SetGrayEffect( true );
+                    //TestImage.SetBlurEffect( true, 0.5f );
+                    //TestImage.SetPixelEffect( true );
+                    //TestImage1.SetGrayEffect( true, 0.5f );
+                    //TestImage1.SetPixelEffect( true, 0.5f );
+                    //TestImage1.SetBlurEffect( true );
+
+                    //ui_test_uieffect
+                    //TestText.SetGrayEffect( true );
+                    //TestText.SetPixelEffect( true, 0.2f );
+                    //TestText.SetBlurEffect( true, 0.5f );
+                    //TestText1.SetGrayEffect( true, 0.5f );
+                    //TestText1.SetPixelEffect( true, 1f );
+                    //TestText1.SetBlurEffect( true, 0.6f );
                 } );
             };
             if( m_check_update )
