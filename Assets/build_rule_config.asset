@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 818776e8f342fc741831ac4ae8c2dec1, type: 3}
+  m_Name: build_rule_config
+  m_EditorClassIdentifier: 
+  Filters:
+  - des: "\u6253\u5305lua"
+    type: 0
+    searchPath: Assets/LuaScript
+    searchPattern: '*.txt'
+    searchOption: 1
+    bundleName: luas
+  - des: "\u6253\u5305pb"
+    type: 0
+    searchPath: Assets/LuaScript/Pb
+    searchPattern: '*.bytes'
+    searchOption: 1
+    bundleName: pbs
+  - des: "\u6253\u5305\u914D\u7F6E"
+    type: 0
+    searchPath: Assets/Res/Config
+    searchPattern: '*.txt'
+    searchOption: 1
+    bundleName: configs
+  - des: "\u6253\u5305Shader"
+    type: 0
+    searchPath: Assets/Res/Shader
+    searchPattern: '*.shader'
+    searchOption: 1
+    bundleName: shaders
+  - des: "\u6253\u5305Shader\u53D8\u91CF\u5668"
+    type: 0
+    searchPath: Assets/Res/Shader
+    searchPattern: '*.shadervariants'
+    searchOption: 1
+    bundleName: shaders
+  - des: "\u6253\u5305UI"
+    type: 2
+    searchPath: Assets/Res/UI/Prefab
+    searchPattern: '*.prefab'
+    searchOption: 1
+    bundleName: 
+  - des: "\u6253\u5305UI TEXTURE"
+    type: 0
+    searchPath: Assets/Res/UI/Texture
+    searchPattern: '*.png'
+    searchOption: 1
+    bundleName: tex
+  - des: test shader
+    type: 2
+    searchPath: Assets/Res/TestShader
+    searchPattern: '*.prefab'
+    searchOption: 1
+    bundleName: 
+  - des: test scene
+    type: 3
+    searchPath: Assets/Scene/test
+    searchPattern: '*.unity'
+    searchOption: 1
+    bundleName: 
+  - des: test music
+    type: 2
+    searchPath: Assets/Res/Audio/Dynamic
+    searchPattern: '*.ogg'
+    searchOption: 1
+    bundleName: 

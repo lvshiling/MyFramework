@@ -15,6 +15,8 @@ namespace ResFramework
         //key被依赖的资源名 value引用这个依赖的资源名
         static Dictionary<string, List<string>> allDependencies = new Dictionary<string, List<string>>();
 
+        public BuildRuleConfig RuleConfig;
+
         public string searchPath;
         public string searchPattern;
         public SearchOption searchOption = SearchOption.AllDirectories;
@@ -45,10 +47,9 @@ namespace ResFramework
             rules.Clear();
             allDependencies.Clear();
 
-            const string rulesini = "Assets/res_rules.txt";
-            if( File.Exists( rulesini ) )
+            if( File.Exists( AssetBundleBuilderPanel.BuildRuleConfigPath ) )
             {
-                LoadRules( rulesini );
+                LoadRules( AssetBundleBuilderPanel.BuildRuleConfigPath );
             }
             else
             {
@@ -75,37 +76,53 @@ namespace ResFramework
 
         static void LoadRules( string rulesini )
         {
-            using( var s = new StreamReader( rulesini ) )
+            BuildRuleConfig config = AssetDatabase.LoadAssetAtPath<BuildRuleConfig>( rulesini );
+            rules.Clear();
+            for( int i = 0; i < config.Filters.Count; ++i )
             {
-                rules.Clear();
-
-                string line = null;
-                while( ( line = s.ReadLine() ) != null )
+                var filter = config.Filters[i];
+                var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + filter.type.ToString() );
+                if( type != null )
                 {
-                    if( line == string.Empty || line.StartsWith( "#", StringComparison.CurrentCulture ) || line.StartsWith( "//", StringComparison.CurrentCulture ) )
-                    {
-                        continue;
-                    }
-                    if( line.Length > 2 && line[0] == '[' && line[line.Length - 1] == ']' )
-                    {
-                        var name = line.Substring( 1, line.Length - 2 );
-                        var searchPath = s.ReadLine().Split( '=' )[1];
-                        var searchPattern = s.ReadLine().Split( '=' )[1];
-                        var searchOption = s.ReadLine().Split( '=' )[1];
-                        var bundleName = s.ReadLine().Split( '=' )[1];
-                        var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + name );
-                        if( type != null )
-                        {
-                            var rule = Activator.CreateInstance( type ) as BuildRule;
-                            rule.searchPath = searchPath;
-                            rule.searchPattern = searchPattern;
-                            rule.searchOption = (SearchOption)Enum.Parse( typeof( SearchOption ), searchOption );
-                            rule.bundleName = bundleName.ToLower();
-                            rules.Add( rule );
-                        }
-                    }
+                    var rule = Activator.CreateInstance( type ) as BuildRule;
+                    rule.searchPath = filter.searchPath;
+                    rule.searchPattern = filter.searchPattern;
+                    rule.searchOption = filter.searchOption;
+                    rule.bundleName = filter.bundleName.ToLower();
+                    rules.Add( rule );
                 }
             }
+            //using( var s = new StreamReader( rulesini ) )
+            //{
+            //    rules.Clear();
+
+            //    string line = null;
+            //    while( ( line = s.ReadLine() ) != null )
+            //    {
+            //        if( line == string.Empty || line.StartsWith( "#", StringComparison.CurrentCulture ) || line.StartsWith( "//", StringComparison.CurrentCulture ) )
+            //        {
+            //            continue;
+            //        }
+            //        if( line.Length > 2 && line[0] == '[' && line[line.Length - 1] == ']' )
+            //        {
+            //            var name = line.Substring( 1, line.Length - 2 );
+            //            var searchPath = s.ReadLine().Split( '=' )[1];
+            //            var searchPattern = s.ReadLine().Split( '=' )[1];
+            //            var searchOption = s.ReadLine().Split( '=' )[1];
+            //            var bundleName = s.ReadLine().Split( '=' )[1];
+            //            var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + name );
+            //            if( type != null )
+            //            {
+            //                var rule = Activator.CreateInstance( type ) as BuildRule;
+            //                rule.searchPath = searchPath;
+            //                rule.searchPattern = searchPattern;
+            //                rule.searchOption = (SearchOption)Enum.Parse( typeof( SearchOption ), searchOption );
+            //                rule.bundleName = bundleName.ToLower();
+            //                rules.Add( rule );
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         static List<string> GetFilesWithoutDirectories( string prefabPath, string searchPattern, SearchOption searchOption )
