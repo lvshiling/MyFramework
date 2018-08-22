@@ -12,6 +12,19 @@ namespace ResFramework
         BuildAssetsWithFilename,
         BuildAssetsWithScenes
     }
+
+    public enum BuildAssetType
+    {
+        prefab,
+        txt,
+        png,
+        bytes,
+        shader,
+        shadervariants,
+        unity,
+        ogg,
+    }
+
     [System.Serializable]
     public class BuildRuleFilter
     {
@@ -22,6 +35,7 @@ namespace ResFramework
         public SearchOption searchOption = SearchOption.AllDirectories;
         public string bundleName;
     }
+
     public class BuildRuleConfig : ScriptableObject
     {
         public List<BuildRuleFilter> Filters = new List<BuildRuleFilter>();

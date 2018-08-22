@@ -57,19 +57,27 @@ public static class XLuaGenConfig
                 typeof(System.Action<GameObject>),
                 typeof(System.Action<Transform>),
                 typeof(System.Action<RectTransform>),
-
+                typeof(Game.LuaHelper),
+                typeof(Game.eEvents),
             };
 
     //C#静态调用Lua的配置（包括事件的原型），仅可以配delegate，interface
     [CSharpCallLua]
     public static List<Type> CSharpCallLua = new List<Type>()
     {
+                //System
                 typeof(System.Action),
                 typeof(System.Action<System.Object>),
                 typeof(System.Action<GameObject>),
                 typeof(System.Action<Transform>),
                 typeof(System.Action<RectTransform>),
+
+                //Unity
                 typeof(UnityEngine.Events.UnityAction),
+
+                //Custom
+                typeof(Utility.GameEventHandler),
+
 
                 //typeof(Func<double, double, double>),
                 //typeof(Action<string>),

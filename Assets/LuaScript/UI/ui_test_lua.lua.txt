@@ -11,6 +11,7 @@ end
 
 function t.OnShow( ... )
 	print( "OnShow" );
+	CS.Game.LuaHelper.AddEvent( CS.Game.eEvents.TestEvent, t.TestEvent );
 end
 
 function t.OnHide()
@@ -19,6 +20,12 @@ end
 
 function t.OnUnload()
 	print( "OnUnload" );
+end
+
+function t.TestEvent( ... )
+	print( "TestEvent" );
+	print( ... );
+	CS.Game.LuaHelper.RemoveEvent( CS.Game.eEvents.TestEvent, t.TestEvent );
 end
 
 return t;

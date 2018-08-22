@@ -1,5 +1,6 @@
 ﻿using ResFramework;
 using UnityEngine;
+using Utility;
 
 namespace Game
 {
@@ -14,6 +15,16 @@ namespace Game
                 asset = _obj as TextAsset;
             }, false );
             return asset.bytes;
+        }
+
+        public static void AddEvent( eEvents _event, GameEventHandler _handler )
+        {
+            EventSystem.Instance.AddEvent( _event, _handler );
+        }
+
+        public static void RemoveEvent( eEvents _event, GameEventHandler _handler )
+        {
+            EventSystem.Instance.RemoveEvent( _event, _handler );
         }
     }
 

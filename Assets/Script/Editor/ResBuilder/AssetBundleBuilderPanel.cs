@@ -8,17 +8,6 @@ using UnityEditorInternal;
 
 namespace ResFramework
 {
-    public enum AssetType
-    {
-        prefab,
-        txt,
-        png,
-        bytes,
-        shader,
-        shadervariants,
-        unity,
-        ogg,
-    }
     public class AssetBundleBuilderPanel : EditorWindow
     {
         public static string BuildRuleConfigPath = "Assets/build_rule_config.asset";
@@ -29,10 +18,10 @@ namespace ResFramework
 
         private Vector2 m_scroll_pos = Vector2.zero;
 
-        [MenuItem("打包/打包面板")]
+        [MenuItem("打包/打包配置面板")]
         private static void _openPanel()
         {
-            GetWindow<AssetBundleBuilderPanel>( "打包面板", true );
+            GetWindow<AssetBundleBuilderPanel>( "打包配置面板", true );
         }
 
         AssetBundleBuilderPanel()
@@ -120,8 +109,8 @@ namespace ResFramework
 
             r.xMin = r.xMax + GAP;
             r.width = 100;
-            AssetType type = (AssetType)Enum.Parse( typeof( AssetType ), filter.searchPattern.Substring( 2 ) );
-            type = (AssetType)EditorGUI.EnumPopup( r, type );
+            BuildAssetType type = (BuildAssetType)Enum.Parse( typeof( BuildAssetType ), filter.searchPattern.Substring( 2 ) );
+            type = (BuildAssetType)EditorGUI.EnumPopup( r, type );
             filter.searchPattern = "*." + type.ToString();
 
             r.xMin = r.xMax + GAP;

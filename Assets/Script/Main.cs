@@ -12,6 +12,7 @@ using System.IO;
 using Google.Protobuf;
 using System.Collections;
 using UIFramework;
+using Game;
 
 namespace GameFramework
 {
@@ -63,30 +64,31 @@ namespace GameFramework
             Action action = () =>
             {
                 //测试lua_proto
-                //ResManager.Instance.LoadBundle( "pbs.assetbundle", (_data, _obj) =>
-                //{
-                //    ResManager.Instance.LoadBundle( "luas.assetbundle", (__data, __obj) =>
-                //    {
-                //        LuaManager.Instance.Init();
-                //        ////测试UI
-                //        //UIFrameWork.UIManager.Instance.ShowUI( "ui_test_lua" );
-                //        //测试pbc
-                //        Msg.LoginRequest msg = new Msg.LoginRequest();
-                //        msg.Id = 1000;
-                //        msg.Name = "zyp";
-                //        msg.Email = "1@qq.com";
-                //        msg.Sid = 8888;
-                //        byte[] result;
-                //        using( MemoryStream ms = new MemoryStream() )
-                //        {
-                //            msg.WriteTo( ms );
-                //            result = ms.ToArray();
-                //        }
-                //        LuaManager.Instance.Call( "TestPbc", result );
-                //        //LuaManager.Instance.Call( "TestPb", result );
-                //        Debug.Log( Network.player.ipAddress );
-                //    } );
-                //} );
+                ResManager.Instance.LoadBundle( "pbs.assetbundle", (_data, _obj) =>
+                {
+                    ResManager.Instance.LoadBundle( "luas.assetbundle", (__data, __obj) =>
+                    {
+                        LuaManager.Instance.Init();
+                        ////测试UI
+                        UIManager.Instance.ShowUI( "ui_test_lua" );
+                        StartCoroutine( _testEvent() );
+                        //测试pbc
+                        //Msg.LoginRequest msg = new Msg.LoginRequest();
+                        //msg.Id = 1000;
+                        //msg.Name = "zyp";
+                        //msg.Email = "1@qq.com";
+                        //msg.Sid = 8888;
+                        //byte[] result;
+                        //using( MemoryStream ms = new MemoryStream() )
+                        //{
+                        //    msg.WriteTo( ms );
+                        //    result = ms.ToArray();
+                        //}
+                        //LuaManager.Instance.Call( "TestPbc", result );
+                        ////LuaManager.Instance.Call( "TestPb", result );
+                        //Debug.Log( Network.player.ipAddress );
+                    } );
+                } );
                 //UIFramework.UIManager.Instance.Initialize();
                 //////测试shader
                 //ResManager.Instance.LoadBundle( "shaders.assetbundle", (_data, _obj) =>
@@ -125,34 +127,34 @@ namespace GameFramework
                 //测试pool
                 //StartCoroutine( _testPool() );
                 //测试UIEffect
-                ResManager.Instance.LoadBundle( "shaders.assetbundle", (_data, _obj) =>
-                {
-                    if( _data != null )
-                    {
-                        ShaderManager.Instance.AddShaders( _data.GetBundle().LoadAllAssets<Shader>() );
-                         _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
-                        _data.Unload();
-                        Debug.Log( "所有shader预热完成" );
-                    }
-                    //UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( "Assets/Res/UI/Prefab/ui_test_c.prefab" );
-                    //GameObject go = Instantiate( obj ) as GameObject;
-                    //go.SetActive( true );
-                    UIManager.Instance.ShowUI( "ui_test_uieffect" );
-                    //TestImage.SetGrayEffect( true );
-                    //TestImage.SetBlurEffect( true, 0.5f );
-                    //TestImage.SetPixelEffect( true );
-                    //TestImage1.SetGrayEffect( true, 0.5f );
-                    //TestImage1.SetPixelEffect( true, 0.5f );
-                    //TestImage1.SetBlurEffect( true );
+                //ResManager.Instance.LoadBundle( "shaders.assetbundle", (_data, _obj) =>
+                //{
+                //    if( _data != null )
+                //    {
+                //        ShaderManager.Instance.AddShaders( _data.GetBundle().LoadAllAssets<Shader>() );
+                //         _data.GetBundle().LoadAsset<ShaderVariantCollection>( "ShaderVariants" ).WarmUp();
+                //        _data.Unload();
+                //        Debug.Log( "所有shader预热完成" );
+                //    }
+                //    //UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadAssetAtPath<UnityEngine.Object>( "Assets/Res/UI/Prefab/ui_test_c.prefab" );
+                //    //GameObject go = Instantiate( obj ) as GameObject;
+                //    //go.SetActive( true );
+                //    UIManager.Instance.ShowUI( "ui_test_uieffect" );
+                //    //TestImage.SetGrayEffect( true );
+                //    //TestImage.SetBlurEffect( true, 0.5f );
+                //    //TestImage.SetPixelEffect( true );
+                //    //TestImage1.SetGrayEffect( true, 0.5f );
+                //    //TestImage1.SetPixelEffect( true, 0.5f );
+                //    //TestImage1.SetBlurEffect( true );
 
-                    //ui_test_uieffect
-                    //TestText.SetGrayEffect( true );
-                    //TestText.SetPixelEffect( true, 0.2f );
-                    //TestText.SetBlurEffect( true, 0.5f );
-                    //TestText1.SetGrayEffect( true, 0.5f );
-                    //TestText1.SetPixelEffect( true, 1f );
-                    //TestText1.SetBlurEffect( true, 0.6f );
-                } );
+                //    //ui_test_uieffect
+                //    //TestText.SetGrayEffect( true );
+                //    //TestText.SetPixelEffect( true, 0.2f );
+                //    //TestText.SetBlurEffect( true, 0.5f );
+                //    //TestText1.SetGrayEffect( true, 0.5f );
+                //    //TestText1.SetPixelEffect( true, 1f );
+                //    //TestText1.SetBlurEffect( true, 0.6f );
+                //} );
             };
             if( m_check_update )
             {
@@ -224,6 +226,12 @@ namespace GameFramework
                 TrashMan.despawnAfterDelay( newObj, 2f );
                 yield return new WaitForSeconds( 3f );
             }
+        }
+
+        IEnumerator _testEvent()
+        {
+            yield return new WaitForSeconds( 5 );
+            EventSystem.Instance.OnEvent( eEvents.TestEvent, 1, 2, 3 );
         }
 
         class TestCsv
