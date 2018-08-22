@@ -52,12 +52,43 @@ namespace ResFramework
         private void _initReorderableList()
         {
             m_scroll_list = new ReorderableList( m_rule_config.Filters, typeof( BuildRuleFilter ) );
-            m_scroll_list.drawHeaderCallback = ( _rect ) => { EditorGUI.LabelField( _rect, "资源路径" ); };
+            m_scroll_list.drawHeaderCallback = _onHeaderGUI;
             m_scroll_list.onAddCallback = _addReorderableItem;
             m_scroll_list.drawElementCallback = _onListElementGUI;
         }
 
+        private void _onHeaderGUI( Rect rect )
+        {
+            const float GAP = 5;
+            Rect r = rect;
+            r.xMin = rect.xMin + 12;
+            r.width = 100;
+            EditorGUI.LabelField( r, "打包内容" );
 
+            r.xMin = r.xMax + GAP;
+            r.width = 300;
+            EditorGUI.LabelField( r, "资源路径" );
+
+            r.xMin = r.xMax + GAP;
+            r.width = 50;
+            EditorGUI.LabelField( r, "修改路径" );
+
+            r.xMin = r.xMax + GAP;
+            r.width = 100;
+            EditorGUI.LabelField( r, "打包资源类型" );
+
+            r.xMin = r.xMax + GAP;
+            r.width = 218;
+            EditorGUI.LabelField( r, "打包类型" );
+
+            r.xMin = r.xMax + GAP;
+            r.width = 100;
+            EditorGUI.LabelField( r, "包名" );
+
+            r.xMin = r.xMax + GAP;
+            r.xMax = rect.xMax;
+            EditorGUI.LabelField( r, "查询方式" );
+        }
 
         private void _onListElementGUI( Rect rect, int index, bool isactive, bool isfocused )
         {
