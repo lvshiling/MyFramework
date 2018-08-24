@@ -35,21 +35,33 @@ namespace ResFramework
         }
 
         [MenuItem( "打包/打包所有" )]
-        public static void Build()
+        public static void Build( bool _all = true )
         {
             long begin = System.DateTime.Now.Ticks;
             ClearAllAssetBundleName();
+            if( !BuildRule.LoadRules( _all ) )
+                return;
             List<AssetBundleBuild> builds = BuildRule.GetBuilds();
             if( builds == null || builds.Count == 0 )
                 return;
             BuildPipeline.BuildAssetBundles( Path, builds.ToArray(), Options, TargetPlatform );
-            BuildResList( null );
+            if( _all )
+            {
+                BuildResList( null );
+            }
+            else
+            {
+                Dictionary<string, ResConfig> res_config = new Dictionary<string, ResConfig>();
+                Dictionary<string, string> res_path = new Dictionary<string, string>();
+                LoadResList( res_config, res_path );
+                BuildResList( res_config );
+            }
             TimeSpan elapsedSpan = new TimeSpan( System.DateTime.Now.Ticks - begin );
             Debug.LogFormat( "打包所有完成 用时{0}秒", elapsedSpan.TotalSeconds );
         }
 
-        //打包单个只是为了方便修改某个资源后不用打全包就能马上在手机上测试 但是没有收集依赖 
-        [MenuItem( "打包/打包选中" )]
+        //打包选中 只支持该资源本身就是一个单独的包的情况 但是没有收集依赖 
+        //[MenuItem( "打包/打包鼠标选中" )]
         public static void BuildSelected()
         {
             UnityEngine.Object[] objs = Selection.GetFiltered<UnityEngine.Object>( SelectionMode.DeepAssets );
@@ -65,12 +77,7 @@ namespace ResFramework
             }
             Dictionary<string, ResConfig> res_config = new Dictionary<string, ResConfig>();
             Dictionary<string, string> res_path = new Dictionary<string, string>();
-            using( FileStream file_stream = new FileStream( ResListPath, FileMode.Open, FileAccess.Read ) )
-            {
-                Byte[] bytes = new Byte[file_stream.Length];
-                file_stream.Read( bytes, 0, (int)file_stream.Length );
-                ResManager.Deserialize( bytes, res_config, res_path );
-            }
+            LoadResList( res_config, res_path );
             List<AssetBundleBuild> res_build = new List<AssetBundleBuild>();
             for( int i = 0; i < objs.Length; ++i )
             {
@@ -103,6 +110,12 @@ namespace ResFramework
             Debug.Log( "打包选中完成" );
         }
 
+        [MenuItem( "打包/清空StreamingAssets" )]
+        public static void ClearStreamingAssets()
+        {
+            RemoveDirectory( Path );
+        }
+
         [MenuItem( "打包/清空缓存" )]
         public static void ClearCache()
         {
@@ -119,32 +132,26 @@ namespace ResFramework
                 _res_list = new Dictionary<string, ResConfig>();
             for( int i = 0; i < bundles.Length; i++ )
             {
-                ResConfig config;
-                if( _res_list.ContainsKey( bundles[i] ) )
+                ResConfig config = new ResConfig();
+                config.BundleName = bundles[i];
+                config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
+                string[] depen = manifest.GetAllDependencies( bundles[i] );
+                config.Dependencies.AddRange( depen );
+                config.Size = GetAssetBundleSize( string.Format( "{0}/{1}", Application.streamingAssetsPath, bundles[i] ) );
+                if( config.Size == 0 )
                 {
-                    config = _res_list[bundles[i]];
-                    config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
+                    Debug.LogErrorFormat( "AB包 {0}的大小居然为0 请检查！", bundles[i] );
                 }
+                string[] paths = BuildRule.GetAssetPathByBundle( config.BundleName );
+                //string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( config.BundleName );
+                for( int j = 0; j < paths.Length; j++ )
+                {
+                    config.Assets.Add( paths[j] );
+                }
+                if( _res_list.ContainsKey( config.BundleName ) )//打包选中才有这种情况
+                    _res_list[config.BundleName] = config;
                 else
-                {
-                    config = new ResConfig();
-                    config.BundleName = bundles[i];
-                    config.Md5 = manifest.GetAssetBundleHash( bundles[i] ).ToString();
-                    string[] depen = manifest.GetAllDependencies( bundles[i] );
-                    config.Dependencies.AddRange( depen );
-                    config.Size = GetAssetBundleSize( string.Format( "{0}/{1}", Application.streamingAssetsPath, bundles[i] ) );
-                    if( config.Size == 0 )
-                    {
-                        Debug.LogErrorFormat( "AB包 {0}的大小居然为0 请检查！", bundles[i] );
-                    }
-                    string[] paths = BuildRule.GetAssetPathByBundle( config.BundleName );
-                    //string[] paths = AssetDatabase.GetAssetPathsFromAssetBundle( config.BundleName );
-                    for( int j = 0; j < paths.Length; j++ )
-                    {
-                        config.Assets.Add( paths[j] );
-                    }
                     _res_list.Add( config.BundleName, config );
-                }
             }
             ab.Unload( true );
             SaveResList( ResListPath, _res_list );
@@ -174,7 +181,17 @@ namespace ResFramework
             }
         }
 
-        public static void SaveResList(string _path, Dictionary<string, ResConfig> _res_list)
+        public static void LoadResList( Dictionary<string, ResConfig> _res_config, Dictionary<string, string> _res_path )
+        {
+            using( FileStream file_stream = new FileStream( ResListPath, FileMode.Open, FileAccess.Read ) )
+            {
+                Byte[] bytes = new Byte[file_stream.Length];
+                file_stream.Read( bytes, 0, (int)file_stream.Length );
+                ResManager.Deserialize( bytes, _res_config, _res_path );
+            }
+        }
+
+        public static void SaveResList( string _path, Dictionary<string, ResConfig> _res_list )
         {
             using( FileStream file_stream = new FileStream( _path, FileMode.Create ) )
             {
@@ -202,7 +219,7 @@ namespace ResFramework
             }
         }
 
-        static List<string> GetFiles(DirectoryInfo dir)
+        public static List<string> GetFiles(DirectoryInfo dir)
         {
             List<string> ret = new List<string>();
             DirectoryInfo[] subs = dir.GetDirectories();
@@ -221,6 +238,21 @@ namespace ResFramework
             }
 
             return ret;
+        }
+
+        public static void RemoveDirectory( string _path )
+        {
+            var main_dir = new DirectoryInfo( _path );
+            var dirs = main_dir.GetDirectories();
+            foreach( var dir in dirs )
+            {
+                dir.Delete( true );
+            }
+            var files = main_dir.GetFiles();
+            foreach( var file in files )
+            {
+                file.Delete();
+            }
         }
 
         public static string LuaDir = "Assets/test/";

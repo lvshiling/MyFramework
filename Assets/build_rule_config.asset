@@ -12,61 +12,71 @@ MonoBehaviour:
   m_Name: build_rule_config
   m_EditorClassIdentifier: 
   Filters:
-  - des: "\u6253\u5305lua"
+  - select: 0
+    des: "\u6253\u5305lua"
     type: 0
     searchPath: Assets/LuaScript
     searchPattern: '*.txt'
     searchOption: 1
     bundleName: luas.assetbundle
-  - des: "\u6253\u5305pb"
+  - select: 0
+    des: "\u6253\u5305pb"
     type: 0
     searchPath: Assets/LuaScript/Pb
     searchPattern: '*.bytes'
     searchOption: 1
     bundleName: pbs.assetbundle
-  - des: "\u6253\u5305\u914D\u7F6E"
+  - select: 1
+    des: "\u6253\u5305\u914D\u7F6E"
     type: 0
     searchPath: Assets/Res/Config
     searchPattern: '*.txt'
     searchOption: 1
     bundleName: configs.assetbundle
-  - des: "\u6253\u5305Shader"
+  - select: 0
+    des: "\u6253\u5305Shader"
     type: 0
     searchPath: Assets/Res/Shader
     searchPattern: '*.shader'
     searchOption: 1
     bundleName: shaders.assetbundle
-  - des: "\u6253\u5305Shader\u53D8\u91CF\u5668"
+  - select: 0
+    des: "\u6253\u5305Shader\u53D8\u91CF\u5668"
     type: 0
     searchPath: Assets/Res/Shader
     searchPattern: '*.shadervariants'
     searchOption: 1
     bundleName: shaders.assetbundle
-  - des: "\u6253\u5305UI"
+  - select: 0
+    des: "\u6253\u5305UI"
     type: 2
     searchPath: Assets/Res/UI/Prefab
     searchPattern: '*.prefab'
     searchOption: 1
     bundleName: 
-  - des: "\u6253\u5305UI TEXTURE"
+  - select: 0
+    des: "\u6253\u5305UI TEXTURE"
     type: 0
     searchPath: Assets/Res/UI/Texture
     searchPattern: '*.png'
     searchOption: 1
     bundleName: tex.assetbundle
-  - des: test shader
+  - select: 0
+    des: test shader
     type: 2
     searchPath: Assets/Res/TestShader
     searchPattern: '*.prefab'
     searchOption: 1
     bundleName: 
-  - des: test scene
+  - select: 0
+    des: test scene
     type: 3
     searchPath: Assets/Scene/test
     searchPattern: '*.unity'
     searchOption: 1
     bundleName: 
-  - des: test music
+  - select: 0
+    des: test music
     type: 2
     searchPath: Assets/Res/Audio/Dynamic
     searchPattern: '*.ogg'

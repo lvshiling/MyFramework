@@ -44,18 +44,7 @@ namespace ResFramework
         {
             packedAssets.Clear();
             builds.Clear();
-            rules.Clear();
             allDependencies.Clear();
-
-            if( File.Exists( AssetBundleBuilderPanel.BuildRuleConfigPath ) )
-            {
-                LoadRules( AssetBundleBuilderPanel.BuildRuleConfigPath );
-            }
-            else
-            {
-                EditorUtility.DisplayDialog( "提示", "打包配置不存在！", "确定" );
-                return null;
-            }
 
             foreach( var item in rules )
             {
@@ -74,13 +63,22 @@ namespace ResFramework
             return builds;
         }
 
-        static void LoadRules( string rulesini )
+        public static bool LoadRules( bool _all )
         {
-            BuildRuleConfig config = AssetDatabase.LoadAssetAtPath<BuildRuleConfig>( rulesini );
+            if( !File.Exists( AssetBundleBuilderPanel.BuildRuleConfigPath ) )
+            {
+                EditorUtility.DisplayDialog( "提示", "打包配置不存在！", "确定" );
+                return false;
+            }
+            BuildRuleConfig config = AssetDatabase.LoadAssetAtPath<BuildRuleConfig>( AssetBundleBuilderPanel.BuildRuleConfigPath );
             rules.Clear();
             for( int i = 0; i < config.Filters.Count; ++i )
             {
                 var filter = config.Filters[i];
+                if( !_all && !filter.select )
+                {
+                    continue;
+                }
                 var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + filter.type.ToString() );
                 if( type != null )
                 {
@@ -92,37 +90,7 @@ namespace ResFramework
                     rules.Add( rule );
                 }
             }
-            //using( var s = new StreamReader( rulesini ) )
-            //{
-            //    rules.Clear();
-
-            //    string line = null;
-            //    while( ( line = s.ReadLine() ) != null )
-            //    {
-            //        if( line == string.Empty || line.StartsWith( "#", StringComparison.CurrentCulture ) || line.StartsWith( "//", StringComparison.CurrentCulture ) )
-            //        {
-            //            continue;
-            //        }
-            //        if( line.Length > 2 && line[0] == '[' && line[line.Length - 1] == ']' )
-            //        {
-            //            var name = line.Substring( 1, line.Length - 2 );
-            //            var searchPath = s.ReadLine().Split( '=' )[1];
-            //            var searchPattern = s.ReadLine().Split( '=' )[1];
-            //            var searchOption = s.ReadLine().Split( '=' )[1];
-            //            var bundleName = s.ReadLine().Split( '=' )[1];
-            //            var type = typeof( BuildRule ).Assembly.GetType( "ResFramework." + name );
-            //            if( type != null )
-            //            {
-            //                var rule = Activator.CreateInstance( type ) as BuildRule;
-            //                rule.searchPath = searchPath;
-            //                rule.searchPattern = searchPattern;
-            //                rule.searchOption = (SearchOption)Enum.Parse( typeof( SearchOption ), searchOption );
-            //                rule.bundleName = bundleName.ToLower();
-            //                rules.Add( rule );
-            //            }
-            //        }
-            //    }
-            //}
+            return true;
         }
 
         static List<string> GetFilesWithoutDirectories( string prefabPath, string searchPattern, SearchOption searchOption )

@@ -77,8 +77,8 @@ namespace Net
                 obj.WriteTo(ms);
                 result = ms.ToArray();
             }
-
-            UInt16 lengh = (UInt16)(result.Length + 2);
+            //整个包=消息头+消息体
+            UInt16 lengh = (UInt16)(result.Length + 2);//消息体长度=id+数组大小
             Debug.Log("lengh" + lengh + ",protoId" + protoId);
             buff.WriteShort((UInt16)lengh);
 

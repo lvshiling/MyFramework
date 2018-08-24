@@ -16,9 +16,11 @@ namespace ResFramework
 
         private ReorderableList m_scroll_list;
 
+
+        private bool m_toggle_remove_streaming = false;
         private Vector2 m_scroll_pos = Vector2.zero;
 
-        [MenuItem("打包/打包配置面板")]
+        [MenuItem("打包/打包面板")]
         private static void _openPanel()
         {
             GetWindow<AssetBundleBuilderPanel>( "打包配置面板", true );
@@ -50,7 +52,7 @@ namespace ResFramework
         {
             const float GAP = 5;
             Rect r = rect;
-            r.xMin = rect.xMin + 12;
+            r.xMin = rect.xMin + 36;
             r.width = 100;
             EditorGUI.LabelField( r, "打包内容" );
 
@@ -89,6 +91,10 @@ namespace ResFramework
             Rect r = rect;
             r.height = 18;
             r.xMin = rect.xMin;
+            r.width = 20;
+            filter.select = EditorGUI.Toggle( r, filter.select );
+
+            r.xMin = r.xMax + GAP;
             r.width = 100;
             filter.des = EditorGUI.TextField( r, filter.des );
 
@@ -167,14 +173,41 @@ namespace ResFramework
             {
                 _initReorderableList();
             }
+
+            EditorGUILayout.BeginVertical();
+
+            EditorGUILayout.BeginHorizontal();
+            m_toggle_remove_streaming = GUILayout.Toggle( m_toggle_remove_streaming, "删除StreamingAssets" );
+            bool build_all = GUILayout.Button( "打包所有(不管选没选中)" );
+            bool build_select = GUILayout.Button( "打包选中" );
+            EditorGUILayout.EndHorizontal();
+
             m_scroll_pos = EditorGUILayout.BeginScrollView( m_scroll_pos );
             {
                 m_scroll_list.DoLayoutList();
             }
             EditorGUILayout.EndScrollView();
 
+            EditorGUILayout.EndVertical();
+
             if( GUI.changed )
                 EditorUtility.SetDirty( m_rule_config );
+
+            if( build_all )
+            {
+                Close();
+                if( m_toggle_remove_streaming )
+                {
+                    AssetBundleBuilder.RemoveDirectory( AssetBundleBuilder.Path );
+                    AssetDatabase.Refresh();
+                }
+                AssetBundleBuilder.Build( true );
+            }
+            if( build_select )
+            {
+                Close();
+                AssetBundleBuilder.Build( false );
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ namespace ResFramework
     [System.Serializable]
     public class BuildRuleFilter
     {
+        public bool select = true;
         public string des = "打包描述";
         public BuildRuleType type;
         public string searchPath;
