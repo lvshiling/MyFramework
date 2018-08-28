@@ -28,6 +28,10 @@ namespace ResFramework
 
         private Dictionary<string, string> m_res_bundle_path = new Dictionary<string, string>();
 
+        private List<string> m_cur_bundle_list;
+
+        private Action m_cur_bundle_list_action;
+
         private string m_persistent_res_list = string.Empty;
 
         public void Init( eResLoadMode _mode )
@@ -163,6 +167,44 @@ namespace ResFramework
             }
 #endif
             _loadAssetBundleAndAsset( _bundle_name, string.Empty, _action, async );
+        }
+
+        public void LoadBundleList( List<string> _list, Action _action, bool async = true )
+        {
+#if UNITY_EDITOR
+            if( ResLoadMode == eResLoadMode.Editor )
+            {
+                if( _action != null )
+                {
+                    _action();
+                }
+                return;
+            }
+#endif
+            if( m_cur_bundle_list != null )
+            {
+                Debug.LogError( "LoadBundleList失败 m_cur_bundle_list还未处理完毕！" );
+                return;
+            }
+            m_cur_bundle_list = _list;
+            m_cur_bundle_list_action = _action;
+            for( int i = 0; i < _list.Count; ++i )
+            {
+                _loadAssetBundleAndAsset( _list[i], string.Empty, _onBundleListLoaded, async );
+            }
+        }
+
+        private void _onBundleListLoaded( ResData _data, UnityEngine.Object _obj )
+        {
+            if( m_cur_bundle_list.Contains( _data.GetBundleName() ) )
+            {
+                m_cur_bundle_list.Remove( _data.GetBundleName() );
+                if( m_cur_bundle_list.Count == 0 )
+                {
+                    m_cur_bundle_list = null;
+                    m_cur_bundle_list_action();
+                }
+            }
         }
 
         public void LoadAsset( string _asset_path, Action<ResData, UnityEngine.Object> _action, bool async = true )
