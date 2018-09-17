@@ -3,8 +3,13 @@
     "*.txt":"lua"
 },]]
 
+--[[local breakSocketHandle,debugXpCall;
+CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() 
+    breakSocketHandle,debugXpCall = StartDebug( "localhost",7003 ); 
+end );]]
+require "LuaDebug"
+local breakSocketHandle,debugXpCall = StartDebug( "localhost", 7003 );
 
---CS.GameFramework.LuaManager.Instance:RequireLua( "LuaDebug", function() StartDebug( "localhost",7003 ); end );
 --require "ltn12"
 
 --[[测试rapidjson
@@ -17,6 +22,9 @@ print('json', s)]]
 --测试pbc
 local pb = require 'protobuf'
 pb.register( CS.Game.LuaHelper.LoadPb('loginForLua') )
+
+--local ui = require "UI/ui_test_lua"
+--ui.OnLoad();
 
 local login = {}
 login.id = 1000;

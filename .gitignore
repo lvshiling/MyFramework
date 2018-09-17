@@ -10,3 +10,5 @@ Assets/XLua/
 ResServer/
 obj/
 
+Assets/LuaScript/.vscode/launch.json
+Assets/LuaScript/.vscode/settings.json

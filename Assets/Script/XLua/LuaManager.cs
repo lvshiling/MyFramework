@@ -20,7 +20,7 @@ namespace GameFramework
             m_lua_env.AddLoader( (ref string path) =>
             {
 #if UNITY_EDITOR
-                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
+                if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor || path == "LuaDebug" )//调试文件不打入包
                     return System.IO.File.ReadAllBytes( string.Format( "Assets/LuaScript/{0}.lua.txt", path ) );
 #endif
                 TextAsset asset = null;
@@ -40,11 +40,11 @@ namespace GameFramework
 
         public void RequireLua( string _name, Action<object> _call_back )
         {
-            _name = string.Format( "Assets/LuaScript/{0}.lua.txt", _name );
+            string name = string.Format( "Assets/LuaScript/{0}.lua.txt", _name );
 #if UNITY_EDITOR
             if( ResManager.Instance.ResLoadMode == eResLoadMode.Editor )
             {
-                object[] datas = m_lua_env.DoString( System.IO.File.ReadAllBytes( _name ) );
+                object[] datas = m_lua_env.DoString( System.IO.File.ReadAllBytes( name ), _name );
                 if( _call_back != null )
                 {
                     _call_back( datas[0] );
@@ -53,9 +53,9 @@ namespace GameFramework
 #endif
             if( ResManager.Instance.ResLoadMode == eResLoadMode.Bundle )
             {
-                ResManager.Instance.LoadAsset( _name, (_res_data, _obj) =>
+                ResManager.Instance.LoadAsset( name, (_res_data, _obj) =>
                 {
-                    object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes );
+                    object[] datas = m_lua_env.DoString( ( _obj as TextAsset ).bytes, _name );
                     if( _call_back != null )
                     {
                         _call_back( datas[0] );

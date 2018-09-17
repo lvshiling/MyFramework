@@ -23,7 +23,7 @@ namespace ResFramework
         [MenuItem("打包/打包面板")]
         private static void _openPanel()
         {
-            GetWindow<AssetBundleBuilderPanel>( "打包配置面板", true );
+            GetWindow<AssetBundleBuilderPanel>( "打包配置面板", true ).minSize = new Vector2( 1024, 300 );
         }
 
         AssetBundleBuilderPanel()
